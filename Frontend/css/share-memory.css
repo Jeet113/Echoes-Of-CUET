@@ -1,0 +1,1072 @@
+/* ============================================
+   SHARE MEMORY PAGE — REDESIGNED
+   Modern step-based flow with glassmorphism
+   ============================================ */
+
+/* ---- Hero ---- */
+.share-hero {
+    padding: 6rem 0 2rem;
+    text-align: center;
+}
+
+.share-hero-content {
+    max-width: 680px;
+    margin: 0 auto;
+}
+
+.share-hero-badge {
+    display: inline-block;
+    background: rgba(238, 155, 0, 0.12);
+    color: var(--gold);
+    padding: 0.5rem 1.5rem;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border: 1px solid rgba(238, 155, 0, 0.25);
+    margin-bottom: 1.2rem;
+}
+
+.share-hero-title {
+    font-size: 2.6rem;
+    font-weight: 700;
+    color: var(--text-light);
+    margin-bottom: 0.8rem;
+    line-height: 1.2;
+}
+
+.share-hero-description {
+    font-size: 1.05rem;
+    color: var(--text-gray-light);
+    line-height: 1.7;
+}
+
+/* ============================================
+   STEP PROGRESS BAR
+   ============================================ */
+.step-progress-section {
+    padding: 0 0 1rem;
+}
+
+.step-progress-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.step-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    position: relative;
+    flex-shrink: 0;
+}
+
+.step-circle {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(0, 95, 115, 0.25);
+    border: 2px solid rgba(10, 147, 150, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+}
+
+.step-num {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-gray-light);
+    transition: opacity 0.3s ease;
+}
+
+.step-check {
+    position: absolute;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.step-label {
+    font-size: 0.82rem;
+    color: var(--text-gray-light);
+    font-weight: 500;
+    transition: color 0.3s ease;
+    white-space: nowrap;
+}
+
+/* Active step */
+.step-item.active .step-circle {
+    background: rgba(10, 147, 150, 0.3);
+    border-color: var(--cyan);
+    box-shadow: 0 0 0 6px rgba(10, 147, 150, 0.1);
+}
+
+.step-item.active .step-num {
+    color: var(--cyan);
+}
+
+.step-item.active .step-label {
+    color: var(--cyan);
+}
+
+/* Completed step */
+.step-item.completed .step-circle {
+    background: rgba(46, 204, 113, 0.2);
+    border-color: #2ECC71;
+}
+
+.step-item.completed .step-num {
+    opacity: 0;
+}
+
+.step-item.completed .step-check {
+    opacity: 1;
+    color: #2ECC71;
+}
+
+.step-item.completed .step-label {
+    color: #2ECC71;
+}
+
+/* Connector */
+.step-connector {
+    flex: 1;
+    height: 3px;
+    background: rgba(10, 147, 150, 0.15);
+    border-radius: 2px;
+    margin: 0 0.5rem;
+    margin-bottom: 1.8rem;
+    overflow: hidden;
+    min-width: 40px;
+}
+
+.step-connector-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #2ECC71, var(--cyan));
+    border-radius: 2px;
+    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.step-connector-fill.filled {
+    width: 100%;
+}
+
+/* ============================================
+   STEP PANELS — GLASSMORPHISM
+   ============================================ */
+.share-main-section {
+    padding: 1rem 0 4rem;
+}
+
+.step-panel {
+    display: none;
+    animation: stepFadeIn 0.45s ease;
+}
+
+.step-panel.active {
+    display: block;
+}
+
+@keyframes stepFadeIn {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.step-panel-glass {
+    background: rgba(0, 18, 25, 0.55);
+    border: 1px solid rgba(10, 147, 150, 0.18);
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.3);
+}
+
+.step-panel-header {
+    margin-bottom: 1.5rem;
+}
+
+.step-panel-header h3 {
+    font-size: 1.35rem;
+    color: var(--text-light);
+    margin-bottom: 0.25rem;
+}
+
+.step-panel-header p {
+    font-size: 0.9rem;
+    color: var(--text-gray-light);
+}
+
+/* Step Navigation Buttons */
+.step-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1.5rem;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.btn-step-next {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: linear-gradient(135deg, var(--cyan), var(--teal));
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-size: 0.95rem;
+    font-weight: 600;
+    font-family: 'Poppins', sans-serif;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 16px rgba(10, 147, 150, 0.3);
+}
+
+.btn-step-next:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(10, 147, 150, 0.4);
+}
+
+.btn-step-next:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.btn-step-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.7rem 1.2rem;
+    background: rgba(0, 95, 115, 0.2);
+    border: 1px solid rgba(10, 147, 150, 0.25);
+    border-radius: 12px;
+    color: var(--text-gray-light);
+    font-size: 0.9rem;
+    font-weight: 500;
+    font-family: 'Poppins', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-step-back:hover {
+    background: rgba(10, 147, 150, 0.15);
+    color: var(--cream);
+    border-color: var(--cyan);
+}
+
+/* ============================================
+   STEP 1 — MAP
+   ============================================ */
+.share-map-wrapper {
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid rgba(10, 147, 150, 0.25);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    position: relative;
+}
+
+#share-map {
+    width: 100%;
+    height: 500px;
+    background: var(--bg-dark);
+}
+
+/* Map confirmation toast */
+.map-confirm-toast {
+    position: absolute;
+    bottom: 1.2rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(10px);
+    background: rgba(0, 18, 25, 0.9);
+    border: 1px solid rgba(46, 204, 113, 0.4);
+    border-radius: 12px;
+    padding: 0.6rem 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.88rem;
+    color: #2ECC71;
+    font-weight: 500;
+    z-index: 800;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+.map-confirm-toast.hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(-50%) translateY(10px);
+}
+
+.map-confirm-toast.visible {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* Map Legend */
+.map-legend {
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 1rem;
+    padding: 0.65rem 1rem;
+    background: rgba(0, 18, 25, 0.45);
+    border-radius: 8px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.83rem;
+    color: var(--text-gray-light);
+}
+
+.legend-dot {
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.8);
+}
+
+.legend-existing {
+    background: linear-gradient(135deg, #EE9B00, #CA6702);
+}
+
+.legend-yours {
+    background: #2ECC71;
+    box-shadow: 0 0 8px rgba(46, 204, 113, 0.5);
+}
+
+/* Location Status Indicator */
+.share-location-status {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.85rem 1.15rem;
+    background: rgba(0, 18, 25, 0.45);
+    border: 2px dashed rgba(10, 147, 150, 0.25);
+    border-radius: 12px;
+    margin-top: 1rem;
+    transition: all 0.35s ease;
+}
+
+.share-location-status.selected {
+    border-color: #2ECC71;
+    background: rgba(46, 204, 113, 0.08);
+    border-style: solid;
+}
+
+.share-location-status .location-icon {
+    color: var(--text-gray-light);
+    flex-shrink: 0;
+    transition: color 0.3s ease;
+}
+
+.share-location-status.selected .location-icon {
+    color: #2ECC71;
+}
+
+#share-location-text {
+    font-size: 0.92rem;
+    color: var(--text-gray-light);
+    transition: color 0.3s ease;
+}
+
+.share-location-status.selected #share-location-text {
+    color: #2ECC71;
+    font-weight: 500;
+}
+
+/* ============================================
+   STEP 2 — FORM with Floating Labels
+   ============================================ */
+.share-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.form-group {
+    margin-bottom: 1.1rem;
+}
+
+/* Floating label group */
+.floating-group {
+    position: relative;
+}
+
+.floating-group input,
+.floating-group textarea {
+    width: 100%;
+    padding: 1rem 2.5rem 0.55rem 1rem;
+    background: rgba(0, 18, 25, 0.5);
+    border: 1px solid rgba(10, 147, 150, 0.25);
+    border-radius: 12px;
+    color: var(--text-light);
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.95rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    outline: none;
+}
+
+.floating-group label {
+    position: absolute;
+    top: 50%;
+    left: 1rem;
+    transform: translateY(-50%);
+    font-size: 0.92rem;
+    color: rgba(148, 210, 189, 0.45);
+    pointer-events: none;
+    transition: all 0.25s ease;
+    background: transparent;
+    padding: 0 0.2rem;
+}
+
+.textarea-group label {
+    top: 1.1rem;
+    transform: translateY(0);
+}
+
+/* Float label up on focus / filled */
+.floating-group input:focus + label,
+.floating-group input:not(:placeholder-shown) + label {
+    top: 0.35rem;
+    left: 0.85rem;
+    font-size: 0.72rem;
+    color: var(--cyan);
+    transform: translateY(0);
+}
+
+.floating-group textarea:focus + label,
+.floating-group textarea:not(:placeholder-shown) + label {
+    top: 0.2rem;
+    left: 0.85rem;
+    font-size: 0.72rem;
+    color: var(--cyan);
+    transform: translateY(0);
+}
+
+.floating-group input:focus,
+.floating-group textarea:focus {
+    border-color: var(--cyan);
+    box-shadow: 0 0 0 3px rgba(10, 147, 150, 0.12);
+}
+
+.floating-group textarea {
+    resize: vertical;
+    min-height: 120px;
+    padding-top: 1.2rem;
+}
+
+/* Validation icons */
+.field-icon {
+    position: absolute;
+    right: 0.85rem;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    pointer-events: none;
+}
+
+.textarea-group .field-icon {
+    top: 1.2rem;
+    transform: none;
+}
+
+.floating-group.valid .valid-icon { opacity: 1; }
+.floating-group.invalid .error-icon { opacity: 1; }
+
+.floating-group.valid input,
+.floating-group.valid textarea {
+    border-color: rgba(46, 204, 113, 0.4);
+}
+
+.floating-group.invalid input,
+.floating-group.invalid textarea {
+    border-color: rgba(255, 107, 107, 0.5);
+}
+
+.field-error {
+    display: block;
+    font-size: 0.76rem;
+    color: #ff6b6b;
+    margin-top: 0.3rem;
+    padding-left: 0.2rem;
+    min-height: 1rem;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.floating-group.invalid .field-error {
+    opacity: 1;
+}
+
+/* Char count */
+.char-count {
+    position: absolute;
+    bottom: 0.45rem;
+    right: 0.85rem;
+    font-size: 0.72rem;
+    color: rgba(148, 210, 189, 0.35);
+    pointer-events: none;
+}
+
+/* Upload label */
+.upload-label {
+    display: block;
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: var(--text-light);
+    margin-bottom: 0.5rem;
+}
+
+/* File Upload Area */
+.share-file-upload {
+    border: 2px dashed rgba(10, 147, 150, 0.25);
+    border-radius: 14px;
+    padding: 1.3rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    background: rgba(0, 18, 25, 0.35);
+}
+
+.share-file-upload:hover {
+    border-color: var(--gold);
+    background: rgba(238, 155, 0, 0.04);
+}
+
+.share-file-upload .file-input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.share-file-upload .upload-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--text-gray-light);
+}
+
+.share-file-upload .upload-text { font-size: 0.88rem; }
+.share-file-upload .upload-hint { font-size: 0.78rem; opacity: 0.55; }
+
+.share-file-upload .file-preview {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    text-align: left;
+}
+
+.share-file-upload .file-preview img {
+    width: 72px;
+    height: 72px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 2px solid rgba(10, 147, 150, 0.3);
+}
+
+.file-preview-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.share-file-upload .file-name {
+    font-size: 0.85rem;
+    color: var(--text-light);
+    font-weight: 500;
+}
+
+.share-file-upload .remove-file {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    background: rgba(174, 32, 18, 0.15);
+    border: 1px solid rgba(174, 32, 18, 0.3);
+    color: #ff6b6b;
+    padding: 0.3rem 0.7rem;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    font-family: 'Poppins', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.share-file-upload .remove-file:hover {
+    background: rgba(174, 32, 18, 0.3);
+}
+
+/* Checkbox */
+.form-check {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 0.5rem;
+    padding: 0.7rem 1rem;
+    background: rgba(238, 155, 0, 0.06);
+    border: 1px solid rgba(238, 155, 0, 0.18);
+    border-radius: 10px;
+}
+
+.form-check input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--gold);
+    cursor: pointer;
+}
+
+.form-check label {
+    font-size: 0.88rem;
+    color: var(--text-gray-light);
+    cursor: pointer;
+    margin: 0;
+}
+
+/* ============================================
+   STEP 3 — PREVIEW
+   ============================================ */
+.preview-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    align-items: start;
+}
+
+/* Preview Card */
+.preview-card {
+    background: rgba(0, 95, 115, 0.12);
+    border: 1px solid rgba(10, 147, 150, 0.2);
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 6px 28px rgba(0, 0, 0, 0.25);
+}
+
+.preview-card-image {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    background: linear-gradient(135deg, var(--teal), var(--cyan));
+}
+
+.preview-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.preview-card-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    opacity: 0.5;
+}
+
+.preview-card-body {
+    padding: 1.3rem;
+}
+
+.preview-card-dept {
+    display: inline-block;
+    background: rgba(10, 147, 150, 0.15);
+    border: 1px solid rgba(10, 147, 150, 0.3);
+    color: var(--cyan);
+    padding: 0.15rem 0.65rem;
+    border-radius: 20px;
+    font-size: 0.76rem;
+    font-weight: 500;
+    margin-bottom: 0.6rem;
+}
+
+.preview-card-title {
+    color: var(--cream);
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-bottom: 0.6rem;
+    line-height: 1.3;
+}
+
+.preview-card-story {
+    color: var(--light-teal);
+    font-size: 0.9rem;
+    line-height: 1.65;
+    margin-bottom: 1rem;
+    max-height: 120px;
+    overflow-y: auto;
+}
+
+.preview-card-story::-webkit-scrollbar { width: 4px; }
+.preview-card-story::-webkit-scrollbar-track { background: transparent; }
+.preview-card-story::-webkit-scrollbar-thumb { background: rgba(10,147,150,0.25); border-radius: 10px; }
+.preview-card-story { scrollbar-width: thin; scrollbar-color: rgba(10,147,150,0.25) transparent; }
+
+.preview-card-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    padding-top: 0.8rem;
+    border-top: 1px solid rgba(10, 147, 150, 0.12);
+}
+
+.preview-meta-row {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.82rem;
+    color: var(--text-gray-light);
+}
+
+.preview-meta-row svg { opacity: 0.65; flex-shrink: 0; }
+
+.preview-card-featured {
+    position: absolute;
+    top: 0.8rem;
+    right: 0.8rem;
+    background: rgba(238, 155, 0, 0.9);
+    color: white;
+    padding: 0.2rem 0.7rem;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.preview-card-featured.hidden {
+    display: none;
+}
+
+/* Summary Checklist */
+.preview-summary {
+    background: rgba(0, 18, 25, 0.45);
+    border: 1px solid rgba(10, 147, 150, 0.15);
+    border-radius: 14px;
+    padding: 1.5rem;
+}
+
+.preview-summary h4 {
+    color: var(--text-light);
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.summary-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+}
+
+.summary-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    font-size: 0.88rem;
+    color: var(--text-gray-light);
+}
+
+.sum-icon {
+    flex-shrink: 0;
+    width: 24px;
+    text-align: center;
+}
+
+.sum-text strong {
+    color: var(--cream);
+    font-weight: 500;
+}
+
+/* Submit Button (shared between step 3 & mobile sticky) */
+.btn-share-submit {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    padding: 0.85rem 2rem;
+    background: linear-gradient(135deg, var(--gold), var(--dark-orange));
+    border: none;
+    border-radius: 14px;
+    color: white;
+    font-size: 1.05rem;
+    font-weight: 600;
+    font-family: 'Poppins', sans-serif;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 18px rgba(238, 155, 0, 0.3);
+}
+
+.btn-share-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(238, 155, 0, 0.45);
+}
+
+.btn-share-submit:active {
+    transform: translateY(0);
+}
+
+.btn-share-submit:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* ============================================
+   MOBILE STICKY SUBMIT
+   ============================================ */
+.mobile-sticky-submit {
+    display: none;
+}
+
+/* ============================================
+   RECENTLY SHARED MEMORIES
+   ============================================ */
+.recent-memories-section {
+    padding: 4rem 0;
+}
+
+.recent-memories-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.recent-memory-card {
+    background: rgba(0, 95, 115, 0.12);
+    border: 1px solid rgba(10, 147, 150, 0.18);
+    border-radius: 14px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.recent-memory-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--gold);
+    box-shadow: 0 8px 28px rgba(238, 155, 0, 0.12);
+}
+
+.recent-memory-card .card-image {
+    width: 100%;
+    height: 170px;
+    object-fit: cover;
+}
+
+.recent-memory-card .card-placeholder {
+    width: 100%;
+    height: 170px;
+    background: linear-gradient(135deg, var(--teal), var(--cyan));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.8rem;
+}
+
+.recent-memory-card .card-body { padding: 1.15rem; }
+
+.recent-memory-card .card-title {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--text-light);
+    margin-bottom: 0.4rem;
+}
+
+.recent-memory-card .card-story {
+    font-size: 0.88rem;
+    color: var(--text-gray-light);
+    line-height: 1.6;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin-bottom: 0.7rem;
+}
+
+.recent-memory-card .card-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: var(--text-gray-light);
+    opacity: 0.8;
+    padding-top: 0.7rem;
+    border-top: 1px solid rgba(10, 147, 150, 0.12);
+}
+
+.recent-memory-card .card-meta .author {
+    font-weight: 500;
+    color: var(--gold);
+}
+
+.recent-memory-card .featured-tag {
+    display: inline-block;
+    background: rgba(238, 155, 0, 0.12);
+    color: var(--gold);
+    padding: 0.15rem 0.55rem;
+    border-radius: 20px;
+    font-size: 0.73rem;
+    font-weight: 500;
+    margin-bottom: 0.4rem;
+}
+
+.no-memories-message {
+    text-align: center;
+    padding: 3rem;
+    color: var(--text-gray-light);
+    font-size: 1.05rem;
+    opacity: 0.65;
+}
+
+/* ============================================
+   CUSTOM SCROLLBAR (page-level)
+   ============================================ */
+.share-main-section ::-webkit-scrollbar { width: 5px; }
+.share-main-section ::-webkit-scrollbar-track { background: transparent; }
+.share-main-section ::-webkit-scrollbar-thumb { background: rgba(10,147,150,0.25); border-radius: 10px; }
+.share-main-section ::-webkit-scrollbar-thumb:hover { background: rgba(10,147,150,0.4); }
+
+/* Pulse animation for selected marker */
+@keyframes markerPulse {
+    0%   { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.5); }
+    70%  { box-shadow: 0 0 0 14px rgba(46, 204, 113, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); }
+}
+
+.selection-pulse {
+    animation: markerPulse 1.6s infinite;
+    border-radius: 50%;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 900px) {
+    .share-hero-title { font-size: 2rem; }
+    .share-main-section { padding-bottom: 5.5rem; }
+    
+    .step-progress-bar { gap: 0; }
+    .step-label { font-size: 0.72rem; }
+    .step-circle { width: 38px; height: 38px; }
+
+    .step-panel-glass { padding: 1.4rem; }
+
+    .step-nav {
+        gap: 0.8rem;
+    }
+
+    .btn-step-next,
+    .btn-step-back {
+        min-height: 44px;
+    }
+
+    .form-row { grid-template-columns: 1fr; }
+
+    .preview-layout { grid-template-columns: 1fr; }
+
+    #share-map { height: 400px; }
+
+    .map-legend {
+        flex-wrap: wrap;
+        gap: 0.75rem;
+    }
+
+    .share-location-status {
+        align-items: flex-start;
+    }
+
+    /* Mobile sticky submit */
+    .mobile-sticky-submit {
+        display: block;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        padding: 0.8rem 1rem;
+        background: rgba(0, 18, 25, 0.95);
+        backdrop-filter: blur(16px);
+        border-top: 1px solid rgba(10, 147, 150, 0.2);
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .mobile-sticky-submit.hidden { display: none; }
+
+    .mobile-sticky-submit .btn-share-submit {
+        width: 100%;
+        padding: 0.85rem;
+    }
+}
+
+@media (max-width: 600px) {
+    .share-hero { padding: 4.5rem 0 1.5rem; }
+    .share-hero-title { font-size: 1.55rem; }
+    .share-hero-description { font-size: 0.92rem; }
+
+    .step-progress-bar {
+        justify-content: flex-start;
+        overflow-x: auto;
+        padding-bottom: 0.45rem;
+    }
+
+    .step-panel-glass { padding: 1.1rem; border-radius: 16px; }
+
+    #share-map { height: 320px; }
+
+    .map-legend {
+        flex-direction: column;
+        gap: 0.4rem;
+        padding: 0.6rem 0.8rem;
+    }
+
+    .step-nav {
+        flex-direction: column-reverse;
+        align-items: stretch;
+    }
+
+    .btn-step-next,
+    .btn-step-back {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .share-file-upload .file-preview {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 0.65rem;
+    }
+
+    .share-file-upload .file-preview img {
+        width: 100%;
+        max-width: 220px;
+        height: 140px;
+    }
+
+    .step-connector { min-width: 24px; }
+
+    .preview-card-image { height: 160px; }
+
+    .recent-memories-grid { grid-template-columns: 1fr; }
+}

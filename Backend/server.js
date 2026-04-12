@@ -1,0 +1,48 @@
+require('dotenv').config();
+const express = require('express');
+const cors = require('cors');
+const mongoose = require('mongoose');
+const dotenv = require('dotenv');
+
+const memoryRoutes = require('./routes/memoryRoutes');
+
+// Load environment variables from .env file.
+dotenv.config();
+
+const app = express();
+
+// Middleware
+// Allows frontend requests from other origins (like localhost:5500 -> localhost:5000).
+app.use(cors());
+
+// Parses incoming JSON request bodies.
+app.use(express.json());
+
+// Parses URL-encoded data (useful for simple form posts).
+app.use(express.urlencoded({ extended: true }));
+
+// Simple test route to check if server is running.
+app.get('/', (req, res) => {
+  res.send('Echoes-Of-CUET backend is running.');
+});
+
+// Mount memory routes under /api/memories.
+app.use('/api/memories', memoryRoutes);
+
+// Connect to MongoDB Atlas and then start the server.
+async function startServer() {
+  try {
+    await mongoose.connect(process.env.MONGO_URI);
+    console.log('Connected to MongoDB Atlas');
+
+    const PORT = process.env.PORT || 5000;
+    app.listen(PORT, () => {
+      console.log(`Server running on http://localhost:${PORT}`);
+    });
+  } catch (error) {
+    console.error('Failed to connect to MongoDB:', error.message);
+    process.exit(1);
+  }
+}
+
+startServer();

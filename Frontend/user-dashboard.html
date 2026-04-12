@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard - Echoes of CUET</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="logo">
+                <a href="index.html" style="text-decoration:none;"><h2>🎓 Echoes Of CUET</h2></a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html#home">Home</a></li>
+                <li><a href="index.html#map-section">Map</a></li>
+                <li><a href="index.html#gallery-section">Memories</a></li>
+                <li><a href="share-memory.html">Share Memory</a></li>
+                <li><a href="user-dashboard.html" class="active">Dashboard</a></li>
+                <li class="dash-nav-user"><img id="dashNavAvatar" src="" alt="Profile avatar"></li>
+                <li><a href="#" id="dashboardLogoutBtn" class="btn-nav-logout">Logout</a></li>
+            </ul>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <main class="dash-main">
+        <div class="container">
+            <section class="profile-page">
+                <div class="profile-cover">
+                    <img id="dashCoverImage" src="Photos/Golchottor.jpg" alt="Cover photo" onerror="this.style.display='none'">
+                    <div class="profile-cover-actions">
+                        <button class="profile-edit-btn" id="openEditCoverBtn" type="button">Change Cover</button>
+                        <button class="profile-edit-btn" id="openEditProfileBtn" type="button">Edit Profile</button>
+                    </div>
+                </div>
+
+                <div class="profile-header">
+                    <div class="profile-avatar-wrap" id="profileAvatarTrigger" title="Update profile picture">
+                        <img id="dashProfileImage" src="" alt="Profile picture" class="profile-avatar">
+                        <span class="avatar-edit-badge">✎</span>
+                    </div>
+
+                    <div class="profile-identify">
+                        <h1 id="dashProfileName">CUET User</h1>
+                        <p id="dashProfileBio">Add your bio to tell your CUET story.</p>
+                    </div>
+
+                    <div class="profile-stats">
+                        <article class="stat-pill">
+                            <span>Total Memories</span>
+                            <strong id="dashMyMemoryCount">0</strong>
+                        </article>
+                        <article class="stat-pill">
+                            <span>Community Total</span>
+                            <strong id="dashCommunityCount">0</strong>
+                        </article>
+                    </div>
+                </div>
+            </section>
+
+            <section class="dash-profile-meta">
+                <div><span>Name</span><strong id="dashName">-</strong></div>
+                <div><span>Email</span><strong id="dashEmail">-</strong></div>
+                <div><span>Department</span><strong id="dashDept">-</strong></div>
+                <div><span>Batch</span><strong id="dashBatch">-</strong></div>
+            </section>
+
+            <section class="dash-list">
+                <div class="dash-list-head">
+                    <h2>My Recent Posts</h2>
+                    <div class="dash-actions">
+                        <a href="share-memory.html" class="btn-primary">Share Memory</a>
+                        <a href="index.html#map-section" class="btn-nav-outline">Explore Map</a>
+                    </div>
+                </div>
+                <div id="dashRecentPosts"></div>
+                <p id="dashNoPosts" class="dash-empty">No memories posted yet.</p>
+            </section>
+        </div>
+    </main>
+
+    <div class="profile-modal-overlay" id="profileModalOverlay" aria-hidden="true">
+        <div class="profile-modal" role="dialog" aria-modal="true" aria-labelledby="profileModalTitle">
+            <button class="profile-modal-close" id="profileModalClose" type="button" aria-label="Close">&times;</button>
+            <h3 id="profileModalTitle">Edit Profile</h3>
+            <p class="profile-modal-sub">Update your public info and profile photo.</p>
+
+            <div class="profile-preview-wrap">
+                <img id="profileModalPreview" class="profile-preview-avatar" src="" alt="Profile preview">
+            </div>
+
+            <div class="profile-cover-preview-wrap">
+                <img id="profileCoverPreview" class="profile-cover-preview" src="Photos/Golchottor.jpg" alt="Cover preview">
+            </div>
+
+            <div class="profile-form-row">
+                <label for="profileNameInput">Name</label>
+                <input id="profileNameInput" type="text" maxlength="60">
+            </div>
+
+            <div class="profile-form-row">
+                <label for="profileBioInput">Bio</label>
+                <textarea id="profileBioInput" maxlength="180" placeholder="Write a short bio..."></textarea>
+            </div>
+
+            <div class="profile-form-row">
+                <label for="profileImageInput">Profile picture</label>
+                <input id="profileImageInput" type="file" accept="image/*">
+                <small>Max size: 2MB. Large images are optimized automatically.</small>
+            </div>
+
+            <div class="profile-form-row">
+                <label for="coverImageInput">Cover photo</label>
+                <input id="coverImageInput" type="file" accept="image/*">
+                <small>Max size: 4MB. Cover image is optimized automatically.</small>
+            </div>
+
+            <div class="profile-modal-actions">
+                <button id="profileCancelBtn" type="button" class="btn-nav-outline">Cancel</button>
+                <button id="profileSaveBtn" type="button" class="btn-primary">Save Profile</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/memory-sync.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>

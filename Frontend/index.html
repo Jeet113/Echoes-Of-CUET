@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Echoes Of CUET — Map-based Campus Stories</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="logo">
+                <h2>🎓 Echoes Of CUET</h2>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#home" class="active" id="navHomeLink">Home</a></li>
+                <li><a href="#map-section" id="navMapLink">Map</a></li>
+                <li><a href="#gallery-section" id="navMemoriesLink">Memories</a></li>
+                <li><a href="share-memory.html" class="share-memory-link share-action-link" id="navShareMemoryLink">Share Memory</a></li>
+                <li id="navAuthActions" class="nav-auth-actions"></li>
+            </ul>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Login Modal -->
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal glass-modal">
+            <button class="modal-close" id="closeLoginModal">&times;</button>
+            <div class="modal-header">
+                <h2>Welcome Back</h2>
+                <p>Login to share your CUET memories</p>
+            </div>
+            <form class="auth-form" id="loginForm">
+                <div class="form-group">
+                    <label for="loginEmail">Email</label>
+                    <input type="email" id="loginEmail" placeholder="your@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn-primary btn-full">Login</button>
+            </form>
+            <div class="modal-footer">
+                <p>Don't have an account? <a href="#" id="showRegister">Register</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div class="modal-overlay" id="registerModal">
+        <div class="modal glass-modal">
+            <button class="modal-close" id="closeRegisterModal">&times;</button>
+            <div class="modal-header">
+                <h2>Join Echoes Of CUET</h2>
+                <p>Create an account to share your stories</p>
+            </div>
+            <form class="auth-form" id="registerForm">
+                <div class="form-group">
+                    <label for="regName">Full Name</label>
+                    <input type="text" id="regName" placeholder="Your Name" required>
+                </div>
+                <div class="form-group">
+                    <label for="regDept">Department & Batch</label>
+                    <input type="text" id="regDept" placeholder="e.g., CSE 2021" required>
+                </div>
+                <div class="form-group">
+                    <label for="regEmail">Email</label>
+                    <input type="email" id="regEmail" placeholder="your@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="regPassword">Password</label>
+                    <input type="password" id="regPassword" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn-primary btn-full">Create Account</button>
+            </form>
+            <div class="modal-footer">
+                <p>Already have an account? <a href="#" id="showLogin">Login</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero-section">
+        <div class="hero-background">
+            <img src="Photos/Screenshot 2026-01-25 003618.png" alt="CUET Campus" loading="lazy">
+            <div class="hero-overlay"></div>
+        </div>
+        
+        <div class="container hero-container">
+            <div class="hero-content">
+                <div class="hero-badge">✨ Campus Storytelling Platform</div>
+                <h1 class="hero-title">Every Corner Has a Story</h1>
+                <p class="hero-tagline">Explore real memories shared by CUET students & alumni</p>
+                <p class="hero-description">
+                    Discover the heart and soul of Chittagong University of Engineering & Technology. 
+                    Share your memories, explore iconic places, and connect with the stories that make our campus special.
+                </p>
+                <div class="hero-buttons">
+                    <a href="#map-section" class="btn-primary">
+                        <span>🗺️ Explore Map</span>
+                    </a>
+                    <a href="share-memory.html" class="btn-secondary share-action-link" id="heroShareBtn">
+                        <span>💭 Share Memory</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Scroll indicator -->
+        <div class="scroll-indicator">
+            <span>Scroll to explore</span>
+            <div class="scroll-arrow"></div>
+        </div>
+    </section>
+
+    <!-- Horizontal Places Gallery -->
+   <section class="places-gallery-section">
+        <div class="container">
+            <h3 class="gallery-title">Iconic CUET Places</h3>
+            <div class="places-scroll-horizontal">
+                        <!-- <div class="place-card-vertical" data-place="Central Shaheed Minar">
+                            <img src="Photos/Golchottor.jpg" alt="Central Shaheed Minar">
+                            <div class="place-overlay-horizontal">
+                                <h4>Central Shaheed Minar</h4>
+                                <p>The symbol of remembrance and national pride at the heart of CUET</p>
+                            </div>
+                        </div>
+                         -->
+                           <div class="place-card-horizontal" data-place="Zero Point">
+                            <img src="Photos/shaheed_minar.jpg" alt="Zero Point">
+                            <div class="place-overlay-horizontal">
+                                 <h4>Central Shaheed Minar</h4>
+                                <p>The symbol of remembrance and national pride at the heart of CUET</p>
+                            </div>
+                        </div>
+                   <!--<div class="place-card-horizontal" data-place="Academic Building 1">
+                            <img src="Photos/academic_building2.jpg" alt="Academic Building">
+                            <div class="place-overlay-horizontal">
+                                <h4>Academic Building 2</h4>
+                                <p>Where knowledge meets innovation and dreams take shape</p>
+                            </div>
+                        </div-->    >
+                              
+                        <div class="place-card-horizontal" data-place="Zero Point">
+                            <img src="Photos/Golchottor.jpg" alt="Zero Point">
+                            <div class="place-overlay-horizontal">
+                                <h4>Gol Chottor</h4>
+                                <p>The iconic meeting spot and social hub of campus life</p>
+                            </div>
+                        </div>
+                        
+                            <div class="place-card-horizontal" data-place="Aukland Point">
+                                <img src="Photos/incubator.jpg" alt="Zero Point">
+                            <div class="place-overlay-horizontal">
+                                <h4>Incubator</h4>
+                                <p>IT Business Incubator</p>
+                            </div>
+                        </div>
+
+                        <div class="place-card-horizontal" data-place="TSC Area">
+                                <img src="Photos/TSC.jpg" alt="TSC">
+                            <div class="place-overlay-horizontal">
+                                <h4>TSC Cafeteria</h4>
+                                <p>Where friends gather and memories are made every day</p>
+                            </div>
+                        </div>
+                     
+                        
+                        <div class="place-card-horizontal" data-place="Boys Hostel">
+                            <img src="Photos/480172263_2097342164016502_8536849449233511759_n.jpg" alt="Boys Hostel">
+                            <div class="place-overlay-horizontal">
+                                <h4>Boys Hall</h4>
+                                <p>Shaheed Tareq Huda Hall</p>
+                            </div>
+                        </div>
+                        
+                         <div class="place-card-horizontal" data-place="Boys Hostel">
+                            <img src="Photos/Shah_Hall.jpg" alt="Boys Hostel">
+                            <div class="place-overlay-horizontal">
+                                <h4>Boys Hall</h4>
+                                <p>Shaheed Mohammad Shah Hall</p>
+                            </div>
+                        </div>
+
+                        <div class="place-card-horizontal" data-place="Girls Hostel">
+                                <img src="Photos/Girls_Hall.jpg" alt="Girls Hostel">
+                            <div class="place-overlay-horizontal">
+                                <h4>Ladies Hall</h4>
+                                <p>Begum Shamsennahar Khan Hall</p>
+                            </div>
+                        </div>                       
+                        
+                    
+                        
+                       <!--<div class="place-card-horizontal" data-place="Cricket Field">
+                                <img src="Photos/Central_Field.jpg" alt="TSC">
+                            <div class="place-overlay-horizontal">
+                                <h4>Central Field</h4>
+                                <p>Where champions are made and team spirit comes alive</p>
+                            </div>
+                        </div>--> 
+                        
+                        <div class="place-card-horizontal" data-place="Medical Center">
+                                <img src="Photos/Medical_Center.jpg" alt="Aukland Point">
+                            <div class="place-overlay-horizontal">
+                                <h4>Medical Center</h4>
+                                <p>Caring for our students' health and wellbeing</p>
+                            </div>
+                        </div>   
+                           
+                        <div class="place-card-horizontal" data-place="Admin Building">
+                                <img src="Photos/Administrative_Building.jpg" alt="Admin Building">
+                            <div class="place-overlay-horizontal">
+                                <h4>VC Building</h4>
+                                <p>The Administrative heart of our beloved university</p>
+                            </div>
+                        </div>                    
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Map Section -->
+    <section id="map-section" class="map-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">🗺️ Explore CUET Memories</h2>
+                <p class="section-description">Click on markers to discover stories shared by students across our beautiful campus</p>
+            </div>
+            
+            <div class="map-container-outer">
+                <!-- Map Controls Bar -->
+                <div class="map-controls-bar">
+                    <div class="map-search-wrapper">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                        <input type="text" id="mapSearchInput" placeholder="Search memories or places..." autocomplete="off">
+                    </div>
+                    <div class="map-controls-right">
+                        <select id="mapDeptFilter" class="map-dept-filter">
+                            <option value="all">All Departments</option>
+                            <option value="CSE">CSE</option>
+                            <option value="EEE">EEE</option>
+                            <option value="ME">ME</option>
+                            <option value="CE">CE</option>
+                            <option value="ARCH">ARCH</option>
+                           <option value="URP">URP</option>
+                            <option value="PME">PME</option>
+                            <option value="BME">BME</option>
+                            <option value="MIE">MIE</option>
+                            <option value="MME">MME</option>
+                            <option value="WRE">WRE</option>
+                            <option value="ETE">ETE</option>
+                        </select>
+                        <select id="routeStart" class="map-dept-filter map-route-select" title="Route start point">
+                            <option value="">From</option>
+                        </select>
+                        <select id="routeEnd" class="map-dept-filter map-route-select" title="Route end point">
+                            <option value="">To</option>
+                        </select>
+                        <button class="map-ctrl-btn" id="routeBtn" title="Get walking directions">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M9 6l6 6-6 6"></path>
+                                <path d="M3 6h6"></path>
+                                <path d="M15 18h6"></path>
+                            </svg>
+                        </button>
+                        <button class="map-ctrl-btn" id="mapLocateBtn" title="Find my location">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="3"></circle>
+                                <path d="M12 2v3"></path>
+                                <path d="M12 19v3"></path>
+                                <path d="M2 12h3"></path>
+                                <path d="M19 12h3"></path>
+                            </svg>
+                        </button>
+                        <button class="map-ctrl-btn" id="mapResetBtn" title="Reset map view">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                                <path d="M3 3v5h5"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Map + Panel Layout -->
+                <div class="map-layout">
+                    <div class="map-wrapper">
+                        <div id="map"></div>
+                        
+                        <!-- Marker Mini Popup (on click) -->
+                        <div id="mapMiniPopup" class="map-mini-popup hidden">
+                            <div class="mini-popup-content" id="miniPopupContent"></div>
+                        </div>
+
+                        <!-- Memory Count Badge -->
+                        <div class="map-memory-count" id="mapMemoryCount">
+                            <span id="mapCountNum">0</span> memories
+                        </div>
+                    </div>
+
+                    <!-- Slide-in Detail Panel -->
+                    <div id="mapDetailPanel" class="map-detail-panel">
+                        <div class="panel-glass">
+                            <button class="panel-close-btn" id="panelCloseBtn">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
+                            <div class="panel-scroll" id="panelScroll">
+                                <div id="panelContent">
+                                    <!-- Dynamic content -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Detail Overlay -->
+        <div class="map-mobile-overlay hidden" id="mapMobileOverlay">
+            <div class="mobile-overlay-backdrop" id="mobileOverlayBackdrop"></div>
+            <div class="mobile-overlay-panel" id="mobileOverlayPanel">
+                <div class="mobile-overlay-handle"></div>
+                <button class="mobile-overlay-close" id="mobileOverlayClose">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+                <div class="mobile-overlay-scroll" id="mobileOverlayContent">
+                    <!-- Dynamic content -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section id="gallery-section" class="gallery-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">📸 Memory Gallery</h2>
+                <p class="section-description">Browse all memories shared by the CUET community</p>
+            </div>
+            
+            <!-- Search Bar -->
+            <div class="gallery-search-bar">
+                <div class="search-input-wrapper">
+                    <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    <input type="text" id="gallerySearchInput" placeholder="Search by name, title, department, place..." autocomplete="off">
+                    <button class="search-clear-btn" id="searchClearBtn" style="display:none;" title="Clear search">&times;</button>
+                </div>
+            </div>
+
+            <!-- Results Info -->
+            <div class="gallery-results-info">
+                <span id="galleryResultCount">Showing all memories</span>
+            </div>
+
+            <!-- Scrollable Gallery -->
+            <div class="gallery-scroll-wrapper" id="galleryScrollWrapper">
+                <div class="gallery-scroll-container" id="galleryScrollContainer">
+                    <div class="gallery-grid" id="galleryGrid">
+                        <!-- Dynamically populated -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- No Results Message -->
+            <div class="gallery-no-results" id="galleryNoResults" style="display:none;">
+                <div class="no-results-icon">🔍</div>
+                <h3>No memories found</h3>
+                <p>Try a different search term or filter</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about-section" class="about-section">
+        <div class="container">
+            <div class="about-grid">
+                <div class="about-content">
+                    <h2 class="section-title">About Echoes Of CUET</h2>
+                    <p>Echoes Of CUET is a community-driven platform that preserves the stories, experiences, and moments that make Chittagong University of Engineering & Technology special.</p>
+                    <p>Every marker on our map represents a real memory shared by a real student or alumnus. From late-night library sessions to victory celebrations at the cricket field, these stories capture the essence of campus life.</p>
+                    <div class="about-stats">
+                        <div class="stat-item">
+                            <span class="stat-number" id="totalMemories">150+</span>
+                            <span class="stat-label">Memories Shared</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number" id="totalContributors">80+</span>
+                            <span class="stat-label">Contributors</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number" id="totalLocations">25+</span>
+                            <span class="stat-label">Locations</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="about-image">
+                    <img src="Photos/Screenshot 2026-01-25 003618.png" alt="CUET Campus" loading="lazy">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <h3>🎓 Echoes Of CUET</h3>
+                    <p>Preserving stories, celebrating moments, connecting generations of CUETians.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#map-section">Explore Map</a></li>
+                        <li><a href="#gallery-section">Gallery</a></li>
+                        <li><a href="share-memory.html">Share Memory</a></li>
+                    </ul>
+                </div>
+                <div class="footer-contact">
+                    <h4>Connect</h4>
+                    <p>Chittagong University of Engineering & Technology</p>
+                    <p>Raozan, Chittagong-4349, Bangladesh</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; Echoes Of CUET. All memories are subject to moderation.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Success Toast -->
+    <div class="toast" id="successToast">
+        <div class="toast-content">
+            <span class="toast-icon">✅</span>
+            <span class="toast-message" id="toastMessage">Memory submitted successfully!</span>
+        </div>
+    </div>
+
+    <!-- Login Required Modal (Share Memory Gate) -->
+    <div class="auth-required-overlay" id="authRequiredModal" aria-hidden="true">
+        <div class="auth-required-modal" role="dialog" aria-modal="true" aria-labelledby="authRequiredTitle">
+            <button class="auth-required-close" id="authRequiredClose" type="button" aria-label="Close">&times;</button>
+            <div class="auth-required-icon">🔒</div>
+            <h3 id="authRequiredTitle">Login required to share your memory</h3>
+            <p>Please login to post and pin your memory on the CUET map.</p>
+            <div class="auth-required-actions">
+                <button id="authRequiredLoginBtn" class="auth-action-login" type="button">Login</button>
+                <button id="authRequiredCancelBtn" class="auth-action-cancel" type="button">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Report Memory Modal -->
+    <div class="report-modal-overlay" id="reportModalOverlay" aria-hidden="true">
+        <div class="report-modal" role="dialog" aria-modal="true" aria-labelledby="reportModalTitle">
+            <button class="report-modal-close" id="reportModalClose" type="button" aria-label="Close report modal">&times;</button>
+            <h3 id="reportModalTitle">Report Memory</h3>
+            <p class="report-modal-subtitle">Help us understand the issue</p>
+
+            <label class="report-modal-label" for="reportReasonInput">Reason</label>
+            <textarea
+                id="reportReasonInput"
+                class="report-modal-textarea"
+                placeholder="Enter reason (optional but recommended)"
+                rows="5"
+            ></textarea>
+
+            <div class="report-modal-actions">
+                <button class="report-btn report-btn-secondary" id="reportCancelBtn" type="button">Cancel</button>
+                <button class="report-btn report-btn-primary" id="reportSubmitBtn" type="button">Submit Report</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom JS -->
+    <script src="js/memory-sync.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBjsl_va8xndI0ua-x3Osv5xsYsF-REHv8&libraries=places&loading=async" async defer></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

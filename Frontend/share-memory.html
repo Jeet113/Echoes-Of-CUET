@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Share Memory — Echoes Of CUET</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/share-memory.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="logo">
+                <a href="index.html" style="text-decoration:none;"><h2>🎓 Echoes Of CUET</h2></a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="index.html#map-section">Map</a></li>
+                <li><a href="index.html#gallery-section">Gallery</a></li>
+                <li><a href="index.html#about-section">About</a></li>
+                <li><a href="share-memory.html" class="active share-memory-link">Share Memory</a></li>
+                <li><a href="user-dashboard.html" class="btn-nav">Dashboard</a></li>
+            </ul>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="share-hero">
+        <div class="container">
+            <div class="share-hero-content">
+                <div class="share-hero-badge">💭 Share Your Story</div>
+                <h1 class="share-hero-title">Pin Your Memory on the Map</h1>
+                <p class="share-hero-description">
+                    Follow 3 simple steps — pick a spot, write your story, and preview before pinning it to the campus map.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Step Progress Bar -->
+    <section class="step-progress-section">
+        <div class="container">
+            <div class="step-progress-bar">
+                <div class="step-item active" data-step="1">
+                    <div class="step-circle">
+                        <span class="step-num">1</span>
+                        <svg class="step-check" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    </div>
+                    <span class="step-label">Pick Location</span>
+                </div>
+                <div class="step-connector"><div class="step-connector-fill" id="connector1"></div></div>
+                <div class="step-item" data-step="2">
+                    <div class="step-circle">
+                        <span class="step-num">2</span>
+                        <svg class="step-check" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    </div>
+                    <span class="step-label">Write Memory</span>
+                </div>
+                <div class="step-connector"><div class="step-connector-fill" id="connector2"></div></div>
+                <div class="step-item" data-step="3">
+                    <div class="step-circle">
+                        <span class="step-num">3</span>
+                        <svg class="step-check" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    </div>
+                    <span class="step-label">Preview & Submit</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Step Panels -->
+    <section class="share-main-section">
+        <div class="container">
+
+            <!-- ===== STEP 1 — Pick Location ===== -->
+            <div class="step-panel active" id="stepPanel1">
+                <div class="step-panel-glass">
+                    <div class="step-panel-header">
+                        <h3>📍 Pick a Location on Campus</h3>
+                        <p>Click anywhere on the CUET campus map to place your memory pin</p>
+                    </div>
+
+                    <div class="share-map-wrapper">
+                        <div id="share-map"></div>
+                        <!-- Location confirmation toast -->
+                        <div class="map-confirm-toast hidden" id="mapConfirmToast">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                            <span id="mapConfirmText">Location selected!</span>
+                        </div>
+                    </div>
+
+                    <div class="map-legend">
+                        <div class="legend-item">
+                            <span class="legend-dot legend-existing"></span>
+                            <span>Existing Memories</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-dot legend-yours"></span>
+                            <span>Your Selected Location</span>
+                        </div>
+                    </div>
+
+                    <!-- Location status -->
+                    <div id="share-location-status" class="share-location-status">
+                        <div class="location-icon">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                <circle cx="12" cy="10" r="3"></circle>
+                            </svg>
+                        </div>
+                        <span id="share-location-text">Click on the map to select a location</span>
+                    </div>
+
+                    <div class="step-nav">
+                        <div></div>
+                        <button class="btn-step-next" id="btnToStep2" disabled>
+                            Continue to Write Memory
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== STEP 2 — Write Memory ===== -->
+            <div class="step-panel" id="stepPanel2">
+                <div class="step-panel-glass">
+                    <div class="step-panel-header">
+                        <h3>✍️ Write Your Memory</h3>
+                        <p>Fill in the details about your campus story</p>
+                    </div>
+
+                    <form id="share-memory-form" class="share-form" novalidate>
+                        <div class="form-row">
+                            <div class="form-group floating-group">
+                                <input type="text" id="share-author" placeholder=" " required autocomplete="off">
+                                <label for="share-author">Your Name</label>
+                                <span class="field-icon valid-icon">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2ECC71" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                                </span>
+                                <span class="field-icon error-icon">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ff6b6b" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                                </span>
+                                <span class="field-error" id="err-author"></span>
+                            </div>
+                            <div class="form-group floating-group">
+                                <input type="text" id="share-dept" placeholder=" " required autocomplete="off">
+                                <label for="share-dept">Department & Batch</label>
+                                <span class="field-icon valid-icon">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2ECC71" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                                </span>
+                                <span class="field-icon error-icon">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ff6b6b" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                                </span>
+                                <span class="field-error" id="err-dept"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group floating-group">
+                            <input type="text" id="share-title" placeholder=" " required autocomplete="off">
+                            <label for="share-title">Memory Title</label>
+                            <span class="field-icon valid-icon">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2ECC71" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                            </span>
+                            <span class="field-icon error-icon">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ff6b6b" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                            </span>
+                            <span class="field-error" id="err-title"></span>
+                        </div>
+
+                        <div class="form-group floating-group textarea-group">
+                            <textarea id="share-story" rows="5" placeholder=" " required></textarea>
+                            <label for="share-story">Your Story</label>
+                            <span class="char-count" id="storyCharCount">0 / 1000</span>
+                            <span class="field-error" id="err-story"></span>
+                        </div>
+
+                        <!-- Photo Upload -->
+                        <div class="form-group">
+                            <label class="upload-label">Photo (Optional)</label>
+                            <div class="share-file-upload" id="shareDropZone">
+                                <input type="file" id="share-image" accept="image/*" class="file-input">
+                                <div class="upload-content" id="shareUploadContent">
+                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                        <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                        <polyline points="21 15 16 10 5 21"></polyline>
+                                    </svg>
+                                    <span class="upload-text">Drag & drop or <strong>browse</strong></span>
+                                    <span class="upload-hint">JPG, PNG, GIF up to 5MB</span>
+                                </div>
+                                <div class="file-preview" id="shareFilePreview" style="display:none;">
+                                    <img id="sharePreviewImage" src="" alt="Preview">
+                                    <div class="file-preview-info">
+                                        <span class="file-name" id="shareFileName"></span>
+                                        <button type="button" class="remove-file" id="shareRemoveFile">
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                                            Remove
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-check">
+                            <input type="checkbox" id="share-featured" value="featured">
+                            <label for="share-featured">⭐ Mark as Featured Memory</label>
+                        </div>
+                    </form>
+
+                    <div class="step-nav">
+                        <button class="btn-step-back" id="btnBackToStep1">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                            Back
+                        </button>
+                        <button class="btn-step-next" id="btnToStep3" disabled>
+                            Preview Memory
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== STEP 3 — Preview & Submit ===== -->
+            <div class="step-panel" id="stepPanel3">
+                <div class="step-panel-glass">
+                    <div class="step-panel-header">
+                        <h3>👁️ Preview Your Memory</h3>
+                        <p>Review how your memory will appear on the map and gallery</p>
+                    </div>
+
+                    <div class="preview-layout">
+                        <!-- Live Preview Card -->
+                        <div class="preview-card" id="previewCard">
+                            <div class="preview-card-image" id="previewCardImage">
+                                <div class="preview-card-placeholder">📷</div>
+                            </div>
+                            <div class="preview-card-body">
+                                <span class="preview-card-dept" id="previewDept">—</span>
+                                <h3 class="preview-card-title" id="previewTitle">Your Memory Title</h3>
+                                <p class="preview-card-story" id="previewStory">Your story will appear here…</p>
+                                <div class="preview-card-meta">
+                                    <div class="preview-meta-row">
+                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                                        <span id="previewAuthor">Your Name</span>
+                                    </div>
+                                    <div class="preview-meta-row">
+                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                                        <span id="previewCoords">—</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="preview-card-featured hidden" id="previewFeatured">⭐ Featured</div>
+                        </div>
+
+                        <!-- Summary Checklist -->
+                        <div class="preview-summary">
+                            <h4>Submission Summary</h4>
+                            <ul class="summary-list">
+                                <li class="summary-item" id="sumLocation">
+                                    <span class="sum-icon">📍</span>
+                                    <span class="sum-text">Location: <strong id="sumLocText">—</strong></span>
+                                </li>
+                                <li class="summary-item" id="sumAuthor">
+                                    <span class="sum-icon">👤</span>
+                                    <span class="sum-text">Author: <strong id="sumAuthorText">—</strong></span>
+                                </li>
+                                <li class="summary-item" id="sumDept">
+                                    <span class="sum-icon">🎓</span>
+                                    <span class="sum-text">Department: <strong id="sumDeptText">—</strong></span>
+                                </li>
+                                <li class="summary-item" id="sumTitle">
+                                    <span class="sum-icon">📝</span>
+                                    <span class="sum-text">Title: <strong id="sumTitleText">—</strong></span>
+                                </li>
+                                <li class="summary-item" id="sumPhoto">
+                                    <span class="sum-icon">📷</span>
+                                    <span class="sum-text">Photo: <strong id="sumPhotoText">None</strong></span>
+                                </li>
+                                <li class="summary-item" id="sumFeatured">
+                                    <span class="sum-icon">⭐</span>
+                                    <span class="sum-text">Featured: <strong id="sumFeaturedText">No</strong></span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="step-nav">
+                        <button class="btn-step-back" id="btnBackToStep2">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                            Edit Memory
+                        </button>
+                        <button class="btn-share-submit" id="share-submit-btn" type="button">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                            <span>Pin Memory to Map</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Mobile Sticky Submit (visible on step 3 for small screens) -->
+    <div class="mobile-sticky-submit hidden" id="mobileStickySubmit">
+        <button class="btn-share-submit" id="mobileSubmitBtn" type="button">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <span>Pin Memory to Map</span>
+        </button>
+    </div>
+
+    <!-- Recently Shared Memories -->
+    <section class="recent-memories-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">🕐 Recently Shared Memories</h2>
+                <p class="section-description">Latest stories pinned by the CUET community</p>
+            </div>
+            <div class="recent-memories-grid" id="recentMemoriesGrid">
+                <!-- Dynamically populated -->
+            </div>
+            <div class="no-memories-message" id="noMemoriesMsg" style="display: none;">
+                <p>No shared memories yet. Be the first to pin your story! 🎉</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <h3>🎓 CUET Memories</h3>
+                    <p>Preserving stories, celebrating moments, connecting generations of CUETians.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="index.html#map-section">Explore Map</a></li>
+                        <li><a href="index.html#gallery-section">Gallery</a></li>
+                        <li><a href="share-memory.html">Share Memory</a></li>
+                    </ul>
+                </div>
+                <div class="footer-contact">
+                    <h4>Connect</h4>
+                    <p>Chittagong University of Engineering & Technology</p>
+                    <p>Raozan, Chittagong-4349, Bangladesh</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 CUET Memories. All memories are subject to moderation.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="successToast">
+        <div class="toast-content">
+            <span class="toast-icon">✅</span>
+            <span class="toast-message" id="toastMessage">Memory shared successfully!</span>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/memory-sync.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBjsl_va8xndI0ua-x3Osv5xsYsF-REHv8&loading=async" async defer></script>
+    <script src="js/share-memory.js"></script>
+</body>
+</html>
