@@ -28,12 +28,11 @@ Users can explore memories on an interactive map, browse stories in a gallery, c
 
 ## Current architecture
 
-- Static HTML/CSS/JavaScript project (no backend server yet).
-- State is stored in browser localStorage.
-- Shared memories are synchronized across pages and tabs using:
-	- localStorage
-	- storage event listeners
-	- custom browser events
+- Multi-page frontend in HTML/CSS/JavaScript.
+- Node.js + Express backend API.
+- MongoDB for persistent data storage.
+- JWT-based authentication with OTP email verification.
+- Shared memories are synchronized in frontend pages and can be persisted through backend APIs.
 - Google Maps JavaScript API is used for map rendering and interactions.
 
 ## Core pages
@@ -60,15 +59,43 @@ Users can explore memories on an interactive map, browse stories in a gallery, c
 - css/dashboard.css: User dashboard styles.
 - css/admin.css: Admin panel styles.
 
+## Authentication API
+
+Base path: `/api/auth`
+
+- `POST /register`
+	- Body: `{ "name": "...", "email": "u1234567@student.cuet.ac.bd", "password": "..." }`
+	- Validates strict CUET student email format.
+	- Hashes password with bcrypt.
+	- Creates user as unverified and sends a 6-digit OTP by email.
+
+- `POST /verify-otp`
+	- Body: `{ "email": "u1234567@student.cuet.ac.bd", "otp": "123456" }`
+	- Verifies OTP, sets `isVerified=true`, and removes OTP.
+
+- `POST /login`
+	- Body: `{ "email": "u1234567@student.cuet.ac.bd", "password": "..." }`
+	- Allows only verified users.
+	- Returns JWT token on success.
+
+- `GET /me`
+	- Header: `Authorization: Bearer <token>`
+	- Returns authenticated user profile.
+
+## Environment variables
+
+Use `.env.example` as a template.
+
+Required for auth:
+
+- `JWT_SECRET`
+- `JWT_EXPIRES_IN` (optional, default `7d`)
+- `EMAIL_HOST`
+- `EMAIL_PORT`
+- `EMAIL_USER`
+- `EMAIL_PASS`
+- `EMAIL_FROM` (optional)
+
 ## Status
 
-This is a functional MVP/prototype for campus memory sharing.
-
-### Production notes
-
-Before production release, the following should be added:
-
-- Backend API and database for persistent multi-device data.
-- Secure authentication and authorization.
-- Server-side moderation and content validation.
-- Protected secrets management for API keys.
+This is a functional MVP with backend APIs, persistent storage, and production-style authentication building blocks.

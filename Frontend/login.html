@@ -145,62 +145,61 @@
     </div>
 
     <script>
-        const DEMO_USERS = [
-            {
-                name: 'Jeet Saha',
-                email: 'u2204113@student.cuet.ac.bd',
-                department: 'CSE',
-                batch: '2022',
-                password: '2204113'
-            },
-            {
-                name: 'Maksud Ahmed Ratul',
-                email: 'u2204109@student.cuet.ac.bd',
-                department: 'CSE',
-                batch: '2022',
-                password: '2204109'
-            }
-        ];
+        const API_BASE = 'http://localhost:5000/api/auth';
 
         function togglePassword(inputId) {
             const input = document.getElementById(inputId);
             input.type = input.type === 'password' ? 'text' : 'password';
         }
 
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            const email = document.getElementById('email').value.trim().toLowerCase();
-            const password = document.getElementById('password').value;
-            
-            // Demo login - check for admin
-            if (email === 'admin@cuet.ac.bd' && password === 'admin123') {
-                localStorage.setItem('cuetUser', JSON.stringify({ email, role: 'admin', name: 'Admin' }));
-                localStorage.setItem('isLoggedIn', 'true');
-                window.location.href = 'admin.html';
-                return;
-            }
+            const submitButton = document.querySelector('.btn-auth');
+            const originalButtonText = submitButton.querySelector('span').textContent;
+            submitButton.disabled = true;
+            submitButton.querySelector('span').textContent = 'Signing In...';
 
-            const matchedDemoUser = DEMO_USERS.find(user => user.email === email && user.password === password);
-            if (matchedDemoUser) {
-                const [firstName, ...lastNameParts] = matchedDemoUser.name.split(' ');
+            try {
+                const email = document.getElementById('email').value.trim().toLowerCase();
+                const password = document.getElementById('password').value;
+
+                const loginResponse = await fetch(`${API_BASE}/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const loginData = await loginResponse.json();
+                if (!loginResponse.ok) {
+                    throw new Error(loginData.message || 'Login failed.');
+                }
+
+                let existingUser = {};
+                try {
+                    existingUser = JSON.parse(localStorage.getItem('cuetUser') || '{}') || {};
+                } catch (e) {
+                    existingUser = {};
+                }
+
+                localStorage.setItem('authToken', loginData.token);
                 localStorage.setItem('cuetUser', JSON.stringify({
-                    firstName,
-                    lastName: lastNameParts.join(' '),
-                    name: matchedDemoUser.name,
-                    email: matchedDemoUser.email,
-                    department: matchedDemoUser.department,
-                    batch: matchedDemoUser.batch,
-                    role: 'user'
+                    id: loginData.user.id,
+                    name: loginData.user.name,
+                    email: loginData.user.email,
+                    department: loginData.user.department || existingUser.department || '',
+                    batch: loginData.user.batch || existingUser.batch || '',
+                    role: 'user',
+                    isVerified: loginData.user.isVerified
                 }));
                 localStorage.setItem('isLoggedIn', 'true');
                 window.location.href = 'user-dashboard.html';
-                return;
-            }
-
-            if (email && password) {
-                localStorage.setItem('cuetUser', JSON.stringify({ email, role: 'user', name: email.split('@')[0] }));
-                localStorage.setItem('isLoggedIn', 'true');
-                window.location.href = 'user-dashboard.html';
+            } catch (error) {
+                alert(error.message || 'Login failed.');
+            } finally {
+                submitButton.disabled = false;
+                submitButton.querySelector('span').textContent = originalButtonText;
             }
         });
     </script>

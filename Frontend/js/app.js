@@ -16,6 +16,7 @@ let directionsService = null;
 let directionsRenderer = null;
 let isMobile = () => window.innerWidth <= 900;
 let pendingReportMemoryId = null;
+let memoryAutoSyncTimer = null;
 
 // CUET Campus coordinates
 const CUET_CENTER = { lat: 22.4625, lng: 91.9703 };
@@ -244,6 +245,26 @@ async function fetchMemoriesFromServer() {
             alert('Server Offline: Could not load map memories from backend.');
         }
     }
+}
+
+function setupMemoryAutoSync() {
+    if (memoryAutoSyncTimer) {
+        clearInterval(memoryAutoSyncTimer);
+    }
+
+    const refreshMemories = () => {
+        fetchMemoriesFromServer();
+    };
+
+    // Keep maps and gallery synced across pages/tabs without manual refresh.
+    memoryAutoSyncTimer = setInterval(refreshMemories, 7000);
+
+    window.addEventListener('focus', refreshMemories);
+    document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) {
+            refreshMemories();
+        }
+    });
 }
 
 function updateMemoryCount(count) {
@@ -1480,6 +1501,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Re-fetch server memories on load so map pins are always current.
     fetchMemoriesFromServer();
+    setupMemoryAutoSync();
 
     if (typeof ReportSync !== 'undefined') {
         ReportSync.onSync(() => {
@@ -1491,6 +1513,12 @@ document.addEventListener('DOMContentLoaded', function() {
         ProfileSync.onSync(() => {
             syncAuthState();
             refreshGallery();
+        });
+    }
+
+    if (typeof MemorySync !== 'undefined') {
+        MemorySync.onSync(() => {
+            fetchMemoriesFromServer();
         });
     }
 });

@@ -1,13 +1,13 @@
-require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
-const dotenv = require('dotenv');
+const path = require('path');
+
+require('dotenv').config({ path: path.join(__dirname, '.env') });
 
 const memoryRoutes = require('./routes/memoryRoutes');
-
-// Load environment variables from .env file.
-dotenv.config();
+const authRoutes = require('./routes/authRoutes');
+const { notFound, errorHandler } = require('./middleware/errorMiddleware');
 
 const app = express();
 
@@ -28,6 +28,11 @@ app.get('/', (req, res) => {
 
 // Mount memory routes under /api/memories.
 app.use('/api/memories', memoryRoutes);
+app.use('/api/auth', authRoutes);
+
+// Fallback + centralized error handlers.
+app.use(notFound);
+app.use(errorHandler);
 
 // Connect to MongoDB Atlas and then start the server.
 async function startServer() {

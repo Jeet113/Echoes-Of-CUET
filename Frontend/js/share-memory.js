@@ -10,6 +10,7 @@ let shareInfoWindow = null;
 let currentStep = 1;
 let uploadedImageData = null; // base64 string of uploaded photo
 let recentApiMemories = [];
+let shareMemoryAutoSyncTimer = null;
 
 function getSharePageUser() {
     try {
@@ -695,6 +696,21 @@ async function handleSubmit() {
         // Add marker immediately on the share page.
         addSharedMarker(mappedMemory);
         recentApiMemories.unshift(mappedMemory);
+
+        // Broadcast sync event so other open pages (like index map) can refresh.
+        if (typeof MemorySync !== 'undefined') {
+            MemorySync.saveMemory({
+                lat: mappedMemory.lat,
+                lng: mappedMemory.lng,
+                title: mappedMemory.title,
+                story: mappedMemory.story,
+                image: mappedMemory.image,
+                author: mappedMemory.author,
+                dept: mappedMemory.dept,
+                featured: mappedMemory.featured,
+            });
+        }
+
         showShareToast('Memory uploaded successfully! 📌', 'success');
         alert('Success: Memory shared successfully!');
 
@@ -838,6 +854,26 @@ async function fetchRecentMemoriesFromServer() {
     }
 }
 
+function setupShareMemoryAutoSync() {
+    if (shareMemoryAutoSyncTimer) {
+        clearInterval(shareMemoryAutoSyncTimer);
+    }
+
+    const refreshMemories = () => {
+        fetchRecentMemoriesFromServer();
+    };
+
+    // Keep share map synced continuously with index map/back-end data.
+    shareMemoryAutoSyncTimer = setInterval(refreshMemories, 7000);
+
+    window.addEventListener('focus', refreshMemories);
+    document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) {
+            refreshMemories();
+        }
+    });
+}
+
 // ============================================
 // TOAST
 // ============================================
@@ -900,6 +936,13 @@ document.addEventListener('DOMContentLoaded', function () {
     setupShareMobileMenu();
     renderRecentMemories();
     fetchRecentMemoriesFromServer();
+    setupShareMemoryAutoSync();
+
+    if (typeof MemorySync !== 'undefined') {
+        MemorySync.onSync(() => {
+            fetchRecentMemoriesFromServer();
+        });
+    }
 
     // Resize listener for mobile sticky
     window.addEventListener('resize', updateMobileStickyVisibility);
