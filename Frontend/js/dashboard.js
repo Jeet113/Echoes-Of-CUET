@@ -16,6 +16,10 @@ function getUser() {
     }
 }
 
+function getAuthToken() {
+    return localStorage.getItem('authToken') || '';
+}
+
 function getDisplayName(user) {
     if (!user) return 'CUET User';
     if (user.firstName || user.lastName) return `${user.firstName || ''} ${user.lastName || ''}`.trim();
@@ -167,6 +171,8 @@ function openProfileModal() {
     const overlay = document.getElementById('profileModalOverlay');
     const nameInput = document.getElementById('profileNameInput');
     const bioInput = document.getElementById('profileBioInput');
+    const departmentInput = document.getElementById('profileDepartmentInput');
+    const batchInput = document.getElementById('profileBatchInput');
     const preview = document.getElementById('profileModalPreview');
     const coverPreview = document.getElementById('profileCoverPreview');
 
@@ -179,6 +185,8 @@ function openProfileModal() {
 
     if (nameInput) nameInput.value = getDisplayName(dashboardUser);
     if (bioInput) bioInput.value = dashboardUser.bio || '';
+    if (departmentInput) departmentInput.value = dashboardUser.department || dashboardUser.dept || '';
+    if (batchInput) batchInput.value = dashboardUser.batch || '';
     if (preview) preview.src = getProfileImage(dashboardUser);
     if (coverPreview) {
         coverPreview.src = pendingCoverImageUrl || DEFAULT_COVER_IMAGE;
@@ -339,6 +347,8 @@ function setupProfileEditor() {
         saveBtn.addEventListener('click', async () => {
             const nameInput = document.getElementById('profileNameInput');
             const bioInput = document.getElementById('profileBioInput');
+            const departmentInput = document.getElementById('profileDepartmentInput');
+            const batchInput = document.getElementById('profileBatchInput');
 
             const fullName = (nameInput?.value || '').trim();
             if (!fullName) {
@@ -366,29 +376,88 @@ function setupProfileEditor() {
                 return;
             }
 
-            const [firstName, ...lastNameParts] = fullName.split(' ');
             const patch = {
-                firstName: firstName || '',
-                lastName: lastNameParts.join(' '),
                 name: fullName,
                 bio: (bioInput?.value || '').trim(),
+                department: (departmentInput?.value || '').trim(),
+                batch: (batchInput?.value || '').trim(),
                 profileImage: profileImageUrl,
                 coverImage: coverImageUrl,
             };
 
-            if (typeof ProfileSync !== 'undefined') {
-                dashboardUser = ProfileSync.saveProfile(patch);
-            } else {
-                dashboardUser = { ...dashboardUser, ...patch };
-                localStorage.setItem('cuetUser', JSON.stringify(dashboardUser));
-            }
+            try {
+                const token = getAuthToken();
+                if (!token) {
+                    throw new Error('Please log in again to update profile.');
+                }
 
-            renderProfileHeader(dashboardUser);
-            closeProfileModal();
-            saveBtn.disabled = false;
-            saveBtn.textContent = 'Save Profile';
+                const response = await fetch('http://localhost:5000/api/auth/profile', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify(patch),
+                });
+
+                const data = await response.json();
+                if (!response.ok) {
+                    throw new Error(data.message || 'Failed to update profile.');
+                }
+
+                const updatedUser = {
+                    ...dashboardUser,
+                    ...(data.user || {}),
+                    role: dashboardUser.role || 'user',
+                };
+
+                if (typeof ProfileSync !== 'undefined') {
+                    dashboardUser = ProfileSync.saveProfile(updatedUser);
+                } else {
+                    dashboardUser = updatedUser;
+                    localStorage.setItem('cuetUser', JSON.stringify(dashboardUser));
+                }
+
+                renderProfileHeader(dashboardUser);
+                closeProfileModal();
+            } catch (error) {
+                alert(error.message || 'Failed to save profile.');
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.textContent = 'Save Profile';
+            }
         });
     }
+}
+
+async function refreshUserFromServer() {
+    const token = getAuthToken();
+    if (!token) return null;
+
+    const response = await fetch('http://localhost:5000/api/auth/me', {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+
+    const data = await response.json();
+    if (!response.ok || !data.user) {
+        throw new Error(data.message || 'Failed to load profile.');
+    }
+
+    const current = getUser() || {};
+    const merged = {
+        ...current,
+        ...data.user,
+        role: current.role || 'user',
+    };
+
+    if (typeof ProfileSync !== 'undefined') {
+        return ProfileSync.saveProfile(merged);
+    }
+
+    localStorage.setItem('cuetUser', JSON.stringify(merged));
+    return merged;
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -408,6 +477,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     renderProfileHeader(dashboardUser);
     fetchAndRenderDashboardMemories(dashboardUser);
+
+    refreshUserFromServer()
+        .then((freshUser) => {
+            if (!freshUser) return;
+            dashboardUser = freshUser;
+            renderProfileHeader(dashboardUser);
+            fetchAndRenderDashboardMemories(dashboardUser);
+        })
+        .catch((error) => {
+            console.error(error);
+        });
 
     const logoutBtn = document.getElementById('dashboardLogoutBtn');
     if (logoutBtn) {

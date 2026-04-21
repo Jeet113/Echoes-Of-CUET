@@ -28,6 +28,15 @@ function protect(req, res, next) {
   }
 }
 
+function adminOnly(req, res, next) {
+  if (!req.user || req.user.role !== 'admin') {
+    return next(createHttpError(403, 'Admin access required.'));
+  }
+
+  return next();
+}
+
 module.exports = {
   protect,
+  adminOnly,
 };

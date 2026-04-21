@@ -16,7 +16,9 @@ let directionsService = null;
 let directionsRenderer = null;
 let isMobile = () => window.innerWidth <= 900;
 let pendingReportMemoryId = null;
+let pendingCommentMemoryId = null;
 let memoryAutoSyncTimer = null;
+const MEMORY_API_BASE = 'http://localhost:5000/api/memories';
 
 // CUET Campus coordinates
 const CUET_CENTER = { lat: 22.4625, lng: 91.9703 };
@@ -192,8 +194,21 @@ function getAllMemoriesForMap() {
     return [...backendMemories];
 }
 
+function getCurrentUserId() {
+    const user = getLoggedInUser();
+    if (!user) return '';
+    return String(user._id || user.id || user.email || '');
+}
+
 function mapApiMemory(memory) {
     const authorName = memory.userName || 'CUET User';
+    const likes = Array.isArray(memory.likes) ? memory.likes : [];
+    const comments = Array.isArray(memory.comments) ? memory.comments : [];
+    const shares = Array.isArray(memory.shares) ? memory.shares : [];
+    const reports = Array.isArray(memory.reports) ? memory.reports : [];
+    const currentUserId = getCurrentUserId();
+    const likedByMe = currentUserId ? likes.some((like) => like.userId === currentUserId) : false;
+
     return {
         id: memory._id,
         title: memory.title || 'Untitled Memory',
@@ -209,6 +224,15 @@ function mapApiMemory(memory) {
         userId: memory.userId || '',
         userName: authorName,
         userProfileImage: memory.userProfileImage || '',
+        likes,
+        comments,
+        shares,
+        reports,
+        likesCount: likes.length,
+        commentsCount: comments.length,
+        sharesCount: shares.length,
+        reportsCount: reports.length,
+        likedByMe,
     };
 }
 
@@ -364,12 +388,16 @@ function showDetailPanel(memory) {
 }
 
 function buildPanelHTML(memory) {
-    const imageSection = memory.image
+    const imageSrc = memory.imageUrl || memory.image || '';
+    const imageSection = imageSrc
         ? `<div class="panel-image-wrapper">
-               <img src="${memory.image}" alt="${memory.title}" onerror="this.parentElement.outerHTML='<div class=\\'panel-image-placeholder\\'>📷</div>'">
+               <img src="${imageSrc}" alt="${memory.title}" onerror="this.parentElement.outerHTML='<div class=\\'panel-image-placeholder\\'>📷</div>'">
                ${memory.featured ? '<span class="panel-featured-tag">⭐ Featured</span>' : ''}
            </div>`
         : `<div class="panel-image-placeholder">${memory.featured ? '<span class="panel-featured-tag">⭐ Featured</span>' : ''}📷</div>`;
+
+    const actionsDisabled = !memory.id;
+    const disabledAttr = actionsDisabled ? 'disabled title="Only published memories support this action"' : '';
 
     return `
         ${imageSection}
@@ -392,24 +420,24 @@ function buildPanelHTML(memory) {
                 </div>
             </div>
             <div class="panel-actions">
-                <button class="panel-action-btn" onclick="this.classList.toggle('liked')">
+                <button class="panel-action-btn ${memory.likedByMe ? 'liked' : ''}" ${disabledAttr} onclick="window.handleMemoryLike('${memory.id || ''}')">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
                     </svg>
-                    Like
+                    Like (${memory.likesCount || 0})
                 </button>
-                <button class="panel-action-btn">
+                <button class="panel-action-btn" ${disabledAttr} onclick="window.handleMemoryComment('${memory.id || ''}')">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
                     </svg>
-                    Comment
+                    Comment (${memory.commentsCount || 0})
                 </button>
-                <button class="panel-action-btn">
+                <button class="panel-action-btn" ${disabledAttr} onclick="window.handleMemoryShare('${memory.id || ''}')">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle>
                         <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
                     </svg>
-                    Share
+                    Share (${memory.sharesCount || 0})
                 </button>
                 ${memory.id ? `<button class="panel-action-btn panel-report-btn" onclick="window.reportMemoryPrompt('${memory.id}')">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -900,10 +928,13 @@ function findMemoryById(memoryId) {
 }
 
 function isAlreadyReportedByCurrentUser(memoryId) {
-    if (!memoryId || typeof ReportSync === 'undefined') return false;
+    if (!memoryId) return false;
     const reporter = getReporterIdentity();
     if (!reporter) return false;
-    return ReportSync.hasUserReported(memoryId, reporter.id);
+    const memory = findMemoryById(memoryId);
+    if (!memory) return false;
+    const reports = Array.isArray(memory.reports) ? memory.reports : [];
+    return reports.some((report) => report.userId === reporter.id);
 }
 
 function reportMemoryPrompt(memoryId) {
@@ -925,7 +956,7 @@ function reportMemoryPrompt(memoryId) {
         return;
     }
 
-    if (typeof ReportSync !== 'undefined' && ReportSync.hasUserReported(memory.id, reporter.id)) {
+    if (isAlreadyReportedByCurrentUser(memory.id)) {
         showToast('You already reported this memory.', 'error');
         return;
     }
@@ -995,38 +1026,36 @@ function submitReportFromModal() {
     const { reasonInput } = getReportModalElements();
     const reason = (reasonInput?.value || '').trim();
 
-    if (typeof ReportSync === 'undefined') {
-        closeReportModal();
-        showToast('Report system is not available.', 'error');
-        return;
-    }
-
-    const result = ReportSync.reportMemory({
-        memoryId: memory.id,
-        reportedBy: reporter,
+    postMemoryAction(memory.id, 'report', {
+        userId: reporter.id,
+        userName: reporter.name,
         reason,
-        memorySnapshot: {
-            id: memory.id,
-            title: memory.title,
-            story: memory.story,
-            description: memory.story,
-            imageUrl: memory.imageUrl || memory.image || null,
-            lat: memory.lat,
-            lng: memory.lng,
-            author: memory.author,
-            dept: memory.dept,
-            date: memory.date,
-        },
-    });
+    })
+        .then((data) => {
+            updateMemoryInCache(memory.id, (item) => {
+                const reports = Array.isArray(item.reports) ? [...item.reports] : [];
+                const report = data.report || {
+                    userId: reporter.id,
+                    userName: reporter.name,
+                    reason: reason || 'No reason provided',
+                    at: new Date().toISOString(),
+                };
+                reports.push(report);
+                return {
+                    ...item,
+                    reports,
+                    reportsCount: Number.isFinite(data.reportsCount) ? data.reportsCount : reports.length,
+                };
+            });
 
-    if (!result.ok) {
-        showToast(result.message || 'Failed to submit report.', 'error');
-        return;
-    }
-
-    closeReportModal();
-    showToast('Report submitted. Thank you for helping keep the community safe.', 'success');
-    refreshGallery();
+            closeReportModal();
+            showToast('Report submitted. Thank you for helping keep the community safe.', 'success');
+            refreshGallery();
+            refreshOpenDetailPanel(memory.id);
+        })
+        .catch((error) => {
+            showToast(error.message || 'Failed to submit report.', 'error');
+        });
 }
 
 function setupReportModal() {
@@ -1046,6 +1075,186 @@ function setupReportModal() {
     document.addEventListener('keydown', (event) => {
         if (event.key === 'Escape' && overlay.classList.contains('active')) {
             closeReportModal();
+        }
+    });
+}
+
+function getCommentsModalElements() {
+    return {
+        overlay: document.getElementById('commentsModalOverlay'),
+        title: document.getElementById('commentsModalTitle'),
+        list: document.getElementById('commentsList'),
+        input: document.getElementById('commentInput'),
+        cancelBtn: document.getElementById('commentCancelBtn'),
+        submitBtn: document.getElementById('commentSubmitBtn'),
+        closeBtn: document.getElementById('commentsModalClose'),
+    };
+}
+
+function renderCommentsList(memory) {
+    const { list, title } = getCommentsModalElements();
+    if (!list) return;
+
+    const comments = Array.isArray(memory.comments) ? memory.comments : [];
+    if (title) {
+        title.textContent = `Comments - ${memory.title || 'Memory'}`;
+    }
+
+    if (!comments.length) {
+        list.innerHTML = '<p class="comments-empty">No comments yet. Be the first to comment.</p>';
+        return;
+    }
+
+    list.innerHTML = comments
+        .map((comment) => {
+            const name = comment.userName || 'CUET User';
+            const text = comment.text || '';
+            const dateText = comment.at ? new Date(comment.at).toLocaleString() : 'Just now';
+            return `
+                <article class="comment-item">
+                    <div class="comment-item-top">
+                        <strong>${name}</strong>
+                        <span>${dateText}</span>
+                    </div>
+                    <p>${text}</p>
+                </article>
+            `;
+        })
+        .join('');
+}
+
+function openCommentsModal(memoryId) {
+    const memory = findMemoryById(memoryId);
+    if (!memory || !memory.id) {
+        showToast('This memory is unavailable.', 'error');
+        return;
+    }
+
+    const { overlay, input } = getCommentsModalElements();
+    if (!overlay) {
+        showToast('Comments modal is unavailable.', 'error');
+        return;
+    }
+
+    pendingCommentMemoryId = memory.id;
+    renderCommentsList(memory);
+
+    overlay.classList.add('active');
+    overlay.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+
+    if (input) {
+        input.value = '';
+        setTimeout(() => input.focus(), 30);
+    }
+}
+
+function closeCommentsModal() {
+    const { overlay, input } = getCommentsModalElements();
+    if (!overlay) return;
+
+    overlay.classList.remove('active');
+    overlay.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    pendingCommentMemoryId = null;
+
+    if (input) input.value = '';
+}
+
+async function submitCommentFromModal() {
+    if (!pendingCommentMemoryId) {
+        closeCommentsModal();
+        return;
+    }
+
+    if (!requireLoginForMemoryAction()) return;
+
+    const actor = getReporterIdentity();
+    if (!actor) {
+        showToast('Unable to identify current user.', 'error');
+        return;
+    }
+
+    const { input, submitBtn } = getCommentsModalElements();
+    const text = String(input?.value || '').trim();
+    if (!text) {
+        showToast('Comment cannot be empty.', 'error');
+        return;
+    }
+
+    try {
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Posting...';
+        }
+
+        const data = await postMemoryAction(pendingCommentMemoryId, 'comments', {
+            userId: actor.id,
+            userName: actor.name,
+            text,
+        });
+
+        updateMemoryInCache(pendingCommentMemoryId, (memory) => {
+            const comments = Array.isArray(memory.comments) ? [...memory.comments] : [];
+            const newComment = data.comment || {
+                userId: actor.id,
+                userName: actor.name,
+                text,
+                at: new Date().toISOString(),
+            };
+            comments.push(newComment);
+            return {
+                ...memory,
+                comments,
+                commentsCount: Number.isFinite(data.commentsCount) ? data.commentsCount : comments.length,
+            };
+        });
+
+        const updated = findMemoryById(pendingCommentMemoryId);
+        if (updated) {
+            renderCommentsList(updated);
+        }
+
+        if (input) input.value = '';
+        refreshOpenDetailPanel(pendingCommentMemoryId);
+        refreshGallery();
+        showToast('Comment added successfully.', 'success');
+    } catch (error) {
+        showToast(error.message || 'Failed to add comment.', 'error');
+    } finally {
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Post Comment';
+        }
+    }
+}
+
+function setupCommentsModal() {
+    const { overlay, cancelBtn, submitBtn, closeBtn, input } = getCommentsModalElements();
+    if (!overlay) return;
+
+    if (cancelBtn) cancelBtn.addEventListener('click', closeCommentsModal);
+    if (closeBtn) closeBtn.addEventListener('click', closeCommentsModal);
+    if (submitBtn) submitBtn.addEventListener('click', submitCommentFromModal);
+
+    if (input) {
+        input.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                submitCommentFromModal();
+            }
+        });
+    }
+
+    overlay.addEventListener('click', (event) => {
+        if (event.target === overlay) {
+            closeCommentsModal();
+        }
+    });
+
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && overlay.classList.contains('active')) {
+            closeCommentsModal();
         }
     });
 }
@@ -1111,6 +1320,167 @@ function refreshGallery() {
     allGalleryMemories = getAllMemories();
     const query = document.getElementById('gallerySearchInput')?.value.trim().toLowerCase() || '';
     filterGallery(query);
+}
+
+function getAuthToken() {
+    return localStorage.getItem('authToken') || '';
+}
+
+function requireLoginForMemoryAction() {
+    if (!isLoggedIn) {
+        alert('Login required.');
+        window.location.href = 'login.html';
+        return false;
+    }
+
+    const token = getAuthToken();
+    if (!token) {
+        alert('Session expired. Please login again.');
+        window.location.href = 'login.html';
+        return false;
+    }
+
+    return true;
+}
+
+function updateMemoryInCache(memoryId, updater) {
+    let updatedMemory = null;
+    backendMemories = backendMemories.map((memory) => {
+        if (memory.id !== memoryId) return memory;
+        updatedMemory = updater({ ...memory });
+        return updatedMemory;
+    });
+    return updatedMemory;
+}
+
+function refreshOpenDetailPanel(memoryId) {
+    const memory = findMemoryById(memoryId);
+    if (!memory) return;
+
+    currentPlaceCard = memory;
+
+    const desktopPanel = document.getElementById('mapDetailPanel');
+    const panelContent = document.getElementById('panelContent');
+    if (desktopPanel && desktopPanel.classList.contains('open') && panelContent) {
+        panelContent.innerHTML = buildPanelHTML(memory);
+    }
+
+    const mobileOverlay = document.getElementById('mapMobileOverlay');
+    const mobileContent = document.getElementById('mobileOverlayContent');
+    if (mobileOverlay && !mobileOverlay.classList.contains('hidden') && mobileContent) {
+        mobileContent.innerHTML = buildPanelHTML(memory);
+    }
+}
+
+async function postMemoryAction(memoryId, actionPath, payload = {}) {
+    const token = getAuthToken();
+    const response = await fetch(`${MEMORY_API_BASE}/${memoryId}/${actionPath}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
+    });
+
+    const data = await response.json();
+
+    if (response.status === 401) {
+        localStorage.removeItem('authToken');
+        setLoginState(false);
+        throw new Error('Your session expired. Please login again.');
+    }
+
+    if (!response.ok) {
+        throw new Error(data.message || 'Action failed.');
+    }
+
+    return data;
+}
+
+async function handleMemoryLike(memoryId) {
+    if (!memoryId) return;
+    if (!requireLoginForMemoryAction()) return;
+
+    const actor = getReporterIdentity();
+    if (!actor) {
+        showToast('Unable to identify current user.', 'error');
+        return;
+    }
+
+    try {
+        const data = await postMemoryAction(memoryId, 'like', {
+            userId: actor.id,
+            userName: actor.name,
+        });
+
+        updateMemoryInCache(memoryId, (memory) => ({
+            ...memory,
+            likedByMe: !!data.liked,
+            likesCount: Number.isFinite(data.likesCount) ? data.likesCount : memory.likesCount,
+        }));
+
+        refreshOpenDetailPanel(memoryId);
+        refreshGallery();
+    } catch (error) {
+        showToast(error.message || 'Failed to update like.', 'error');
+    }
+}
+
+async function handleMemoryComment(memoryId) {
+    if (!memoryId) return;
+    if (!requireLoginForMemoryAction()) return;
+
+    openCommentsModal(memoryId);
+}
+
+async function handleMemoryShare(memoryId) {
+    if (!memoryId) return;
+    if (!requireLoginForMemoryAction()) return;
+
+    const actor = getReporterIdentity();
+    const memory = findMemoryById(memoryId);
+
+    if (!actor || !memory) {
+        showToast('Unable to complete share.', 'error');
+        return;
+    }
+
+    const shareUrl = `${window.location.origin}${window.location.pathname}#memory-${memoryId}`;
+    const shareTitle = memory.title || 'CUET Memory';
+    const shareText = `Check this CUET memory: ${shareTitle}`;
+
+    try {
+        if (navigator.share) {
+            await navigator.share({ title: shareTitle, text: shareText, url: shareUrl });
+        } else if (navigator.clipboard && navigator.clipboard.writeText) {
+            await navigator.clipboard.writeText(shareUrl);
+            showToast('Share link copied to clipboard.', 'success');
+        }
+    } catch (error) {
+        if (error && error.name === 'AbortError') {
+            return;
+        }
+        showToast('Failed to open share dialog.', 'error');
+        return;
+    }
+
+    try {
+        const data = await postMemoryAction(memoryId, 'share', {
+            userId: actor.id,
+            userName: actor.name,
+        });
+
+        updateMemoryInCache(memoryId, (item) => ({
+            ...item,
+            sharesCount: Number.isFinite(data.sharesCount) ? data.sharesCount : item.sharesCount,
+        }));
+
+        refreshOpenDetailPanel(memoryId);
+        refreshGallery();
+    } catch (error) {
+        showToast(error.message || 'Failed to track share.', 'error');
+    }
 }
 
 // ============================================
@@ -1497,6 +1867,7 @@ document.addEventListener('DOMContentLoaded', function() {
     setupAuthRequiredModal();
     setupShareActionGate();
     setupReportModal();
+    setupCommentsModal();
     syncAuthState();
 
     // Re-fetch server memories on load so map pins are always current.
@@ -1563,3 +1934,6 @@ window.closeDesktopPanel = closeDesktopPanel;
 window.closeMobileOverlay = closeMobileOverlay;
 window.setLoginState = setLoginState;
 window.reportMemoryPrompt = reportMemoryPrompt;
+window.handleMemoryLike = handleMemoryLike;
+window.handleMemoryComment = handleMemoryComment;
+window.handleMemoryShare = handleMemoryShare;

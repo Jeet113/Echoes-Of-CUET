@@ -2,9 +2,12 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const User = require('../models/User');
+const Memory = require('../models/Memory');
 const { sendOtpEmail } = require('../config/mailer');
 
 const CUET_EMAIL_REGEX = /^u\d{7}@student\.cuet\.ac\.bd$/;
+const ADMIN_EMAIL = 'admin@cuet.ac.bd';
+const DEFAULT_ADMIN_PASSWORD = 'admin123';
 
 function createHttpError(statusCode, message) {
   const error = new Error(message);
@@ -20,6 +23,10 @@ function validateCuetEmail(email) {
   return CUET_EMAIL_REGEX.test(email);
 }
 
+function validateLoginEmail(email) {
+  return validateCuetEmail(email) || email === ADMIN_EMAIL;
+}
+
 function generateOtp() {
   return String(Math.floor(100000 + Math.random() * 900000));
 }
@@ -29,7 +36,36 @@ function buildTokenPayload(user) {
     userId: user._id,
     email: user.email,
     name: user.name,
+    role: user.role || 'user',
   };
+}
+
+async function ensureAdminAccount() {
+  const existing = await User.findOne({ email: ADMIN_EMAIL });
+  if (existing) {
+    if (existing.role !== 'admin') {
+      existing.role = 'admin';
+      existing.isVerified = true;
+      existing.otp = null;
+      await existing.save();
+    }
+    return existing;
+  }
+
+  const hashedPassword = await bcrypt.hash(process.env.ADMIN_PASSWORD || DEFAULT_ADMIN_PASSWORD, 12);
+
+  const admin = await User.create({
+    name: 'CUET Admin',
+    email: ADMIN_EMAIL,
+    password: hashedPassword,
+    role: 'admin',
+    isVerified: true,
+    otp: null,
+    department: 'Administration',
+    batch: '',
+  });
+
+  return admin;
 }
 
 function signToken(user) {
@@ -51,6 +87,10 @@ async function register(req, res) {
 
   if (!cleanedName || !normalizedEmail || !password) {
     throw createHttpError(400, 'Name, email, and password are required.');
+  }
+
+  if (normalizedEmail === ADMIN_EMAIL) {
+    throw createHttpError(400, 'This email is reserved for admin login.');
   }
 
   if (!validateCuetEmail(normalizedEmail)) {
@@ -168,8 +208,12 @@ async function login(req, res) {
     throw createHttpError(400, 'Email and password are required.');
   }
 
-  if (!validateCuetEmail(normalizedEmail)) {
-    throw createHttpError(400, "Invalid email format. Use: uXXXXXXX@student.cuet.ac.bd");
+  if (!validateLoginEmail(normalizedEmail)) {
+    throw createHttpError(400, "Invalid email format. Use: uXXXXXXX@student.cuet.ac.bd or admin@cuet.ac.bd");
+  }
+
+  if (normalizedEmail === ADMIN_EMAIL) {
+    await ensureAdminAccount();
   }
 
   const user = await User.findOne({ email: normalizedEmail });
@@ -198,6 +242,66 @@ async function login(req, res) {
       email: user.email,
       department: user.department || '',
       batch: user.batch || '',
+      bio: user.bio || '',
+      profileImage: user.profileImage || '',
+      coverImage: user.coverImage || '',
+      role: user.role || 'user',
+      isVerified: user.isVerified,
+    },
+  });
+}
+
+async function updateProfile(req, res) {
+  const { name, department, batch, bio, profileImage, coverImage } = req.body;
+
+  const user = await User.findById(req.user.userId);
+  if (!user) {
+    throw createHttpError(404, 'User not found.');
+  }
+
+  if (typeof name !== 'undefined') {
+    const cleanedName = String(name).trim();
+    if (!cleanedName) {
+      throw createHttpError(400, 'Name cannot be empty.');
+    }
+    user.name = cleanedName;
+  }
+
+  if (typeof department !== 'undefined') {
+    user.department = String(department || '').trim();
+  }
+
+  if (typeof batch !== 'undefined') {
+    user.batch = String(batch || '').trim();
+  }
+
+  if (typeof bio !== 'undefined') {
+    user.bio = String(bio || '').trim();
+  }
+
+  if (typeof profileImage !== 'undefined') {
+    user.profileImage = String(profileImage || '').trim();
+  }
+
+  if (typeof coverImage !== 'undefined') {
+    user.coverImage = String(coverImage || '').trim();
+  }
+
+  await user.save();
+
+  return res.status(200).json({
+    success: true,
+    message: 'Profile updated successfully.',
+    user: {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      department: user.department || '',
+      batch: user.batch || '',
+      bio: user.bio || '',
+      profileImage: user.profileImage || '',
+      coverImage: user.coverImage || '',
+      role: user.role || 'user',
       isVerified: user.isVerified,
     },
   });
@@ -216,10 +320,52 @@ async function getMe(req, res) {
   });
 }
 
+async function getAdminUsers(req, res) {
+  if (!req.user || req.user.role !== 'admin') {
+    throw createHttpError(403, 'Admin access required.');
+  }
+
+  const users = await User.find().select('-password -otp').sort({ createdAt: -1 });
+  const memoryCountsRaw = await Memory.aggregate([
+    {
+      $group: {
+        _id: '$userId',
+        count: { $sum: 1 },
+      },
+    },
+  ]);
+
+  const countMap = new Map(memoryCountsRaw.map((item) => [String(item._id || ''), item.count]));
+
+  const list = users.map((user) => {
+    const id = String(user._id);
+    const memoryCount = countMap.get(id) || 0;
+
+    return {
+      id,
+      name: user.name,
+      email: user.email,
+      department: user.department || '',
+      batch: user.batch || '',
+      role: user.role || 'user',
+      isVerified: !!user.isVerified,
+      createdAt: user.createdAt,
+      memoryCount,
+    };
+  });
+
+  return res.status(200).json({
+    success: true,
+    users: list,
+  });
+}
+
 module.exports = {
   register,
   verifyOtp,
   resendOtp,
   login,
+  updateProfile,
   getMe,
+  getAdminUsers,
 };

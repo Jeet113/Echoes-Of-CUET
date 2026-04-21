@@ -190,11 +190,14 @@
                     email: loginData.user.email,
                     department: loginData.user.department || existingUser.department || '',
                     batch: loginData.user.batch || existingUser.batch || '',
-                    role: 'user',
+                    bio: loginData.user.bio || existingUser.bio || '',
+                    profileImage: loginData.user.profileImage || existingUser.profileImage || '',
+                    coverImage: loginData.user.coverImage || existingUser.coverImage || '',
+                    role: loginData.user.role || existingUser.role || 'user',
                     isVerified: loginData.user.isVerified
                 }));
                 localStorage.setItem('isLoggedIn', 'true');
-                window.location.href = 'user-dashboard.html';
+                window.location.href = (loginData.user.role === 'admin') ? 'admin.html' : 'user-dashboard.html';
             } catch (error) {
                 alert(error.message || 'Login failed.');
             } finally {

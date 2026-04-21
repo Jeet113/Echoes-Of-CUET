@@ -1,6 +1,7 @@
 const express = require('express');
 const Memory = require('../models/Memory');
 const upload = require('../config/cloudinary');
+const { protect } = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
@@ -169,22 +170,108 @@ async function getMemoriesByStatus(req, res) {
 
 async function getModerationStats(req, res) {
   try {
-    const [pending, approved, rejected, total] = await Promise.all([
+    const [pending, approved, rejected, total, reportedMemoriesRaw, totalReportsRaw] = await Promise.all([
       Memory.countDocuments({ status: 'pending' }),
       Memory.countDocuments({ status: 'approved' }),
       Memory.countDocuments({ status: 'rejected' }),
       Memory.countDocuments(),
+      Memory.countDocuments({ 'reports.0': { $exists: true } }),
+      Memory.aggregate([
+        {
+          $project: {
+            count: { $size: { $ifNull: ['$reports', []] } },
+          },
+        },
+        {
+          $group: {
+            _id: null,
+            total: { $sum: '$count' },
+          },
+        },
+      ]),
     ]);
+
+    const totalReports = Array.isArray(totalReportsRaw) && totalReportsRaw[0] ? totalReportsRaw[0].total : 0;
 
     return res.status(200).json({
       pending,
       approved,
       rejected,
       total,
+      reportedMemories: reportedMemoriesRaw,
+      totalReports,
     });
   } catch (error) {
     return res.status(500).json({
       message: 'Failed to fetch moderation stats.',
+      error: error.message,
+    });
+  }
+}
+
+async function addReport(req, res) {
+  try {
+    const memory = await Memory.findById(req.params.id);
+    if (!memory) {
+      return res.status(404).json({ message: 'Memory not found.' });
+    }
+
+    const { actorId, actorName } = getActorFromRequest(req);
+    if (!actorId) {
+      return res.status(400).json({ message: 'Valid user identity is required.' });
+    }
+
+    if (!Array.isArray(memory.reports)) {
+      memory.reports = [];
+    }
+
+    const alreadyReported = memory.reports.some((report) => report.userId === actorId);
+    if (alreadyReported) {
+      return res.status(400).json({ message: 'You already reported this memory.' });
+    }
+
+    const reason = String(req.body?.reason || '').trim();
+
+    const report = {
+      userId: actorId,
+      userName: actorName,
+      reason: reason || 'No reason provided',
+      at: new Date(),
+    };
+
+    memory.reports.push(report);
+    await memory.save();
+
+    return res.status(201).json({
+      message: 'Report submitted successfully.',
+      reportsCount: memory.reports.length,
+      report,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: 'Failed to submit report.',
+      error: error.message,
+    });
+  }
+}
+
+async function clearReports(req, res) {
+  try {
+    const memory = await Memory.findById(req.params.id);
+    if (!memory) {
+      return res.status(404).json({ message: 'Memory not found.' });
+    }
+
+    memory.reports = [];
+    await memory.save();
+
+    return res.status(200).json({
+      message: 'Reports cleared successfully.',
+      memoryId: memory._id,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: 'Failed to clear reports.',
       error: error.message,
     });
   }
@@ -341,6 +428,134 @@ async function uploadAsset(req, res) {
   }
 }
 
+function getActorFromRequest(req) {
+  const fallbackId = req.user?.userId ? String(req.user.userId) : '';
+  const bodyUserId = req.body?.userId ? String(req.body.userId).trim() : '';
+  const actorId = bodyUserId || fallbackId;
+
+  const bodyUserName = req.body?.userName ? String(req.body.userName).trim() : '';
+  const tokenName = req.user?.name ? String(req.user.name).trim() : '';
+  const actorName = bodyUserName || tokenName || 'CUET User';
+
+  return { actorId, actorName };
+}
+
+async function toggleLike(req, res) {
+  try {
+    const memory = await Memory.findById(req.params.id);
+    if (!memory) {
+      return res.status(404).json({ message: 'Memory not found.' });
+    }
+
+    const { actorId, actorName } = getActorFromRequest(req);
+    if (!actorId) {
+      return res.status(400).json({ message: 'Valid user identity is required.' });
+    }
+
+    if (!Array.isArray(memory.likes)) {
+      memory.likes = [];
+    }
+
+    const existingIndex = memory.likes.findIndex((like) => like.userId === actorId);
+    let liked = false;
+
+    if (existingIndex >= 0) {
+      memory.likes.splice(existingIndex, 1);
+    } else {
+      memory.likes.push({ userId: actorId, userName: actorName, at: new Date() });
+      liked = true;
+    }
+
+    await memory.save();
+
+    return res.status(200).json({
+      message: liked ? 'Memory liked.' : 'Like removed.',
+      liked,
+      likesCount: memory.likes.length,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: 'Failed to update like.',
+      error: error.message,
+    });
+  }
+}
+
+async function addComment(req, res) {
+  try {
+    const memory = await Memory.findById(req.params.id);
+    if (!memory) {
+      return res.status(404).json({ message: 'Memory not found.' });
+    }
+
+    const text = String(req.body?.text || '').trim();
+    if (!text) {
+      return res.status(400).json({ message: 'Comment text is required.' });
+    }
+
+    const { actorId, actorName } = getActorFromRequest(req);
+    if (!actorId) {
+      return res.status(400).json({ message: 'Valid user identity is required.' });
+    }
+
+    if (!Array.isArray(memory.comments)) {
+      memory.comments = [];
+    }
+
+    const comment = {
+      userId: actorId,
+      userName: actorName,
+      text,
+      at: new Date(),
+    };
+
+    memory.comments.push(comment);
+    await memory.save();
+
+    return res.status(201).json({
+      message: 'Comment added successfully.',
+      commentsCount: memory.comments.length,
+      comment,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: 'Failed to add comment.',
+      error: error.message,
+    });
+  }
+}
+
+async function addShare(req, res) {
+  try {
+    const memory = await Memory.findById(req.params.id);
+    if (!memory) {
+      return res.status(404).json({ message: 'Memory not found.' });
+    }
+
+    const { actorId, actorName } = getActorFromRequest(req);
+    if (!actorId) {
+      return res.status(400).json({ message: 'Valid user identity is required.' });
+    }
+
+    if (!Array.isArray(memory.shares)) {
+      memory.shares = [];
+    }
+
+    memory.shares.push({ userId: actorId, userName: actorName, at: new Date() });
+    await memory.save();
+
+    return res.status(201).json({
+      message: 'Share recorded successfully.',
+      sharesCount: memory.shares.length,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: 'Failed to record share.',
+      error: error.message,
+    });
+  }
+}
+
 // POST /api/memories/share
 // This route receives multipart/form-data from the frontend.
 // 1) `upload.single('image')` uploads the image to Cloudinary.
@@ -362,7 +577,14 @@ router.get('/admin/queue/:status', getMemoriesByStatus);
 router.patch('/admin/:id/edit', editMemory);
 router.patch('/admin/:id/approve', approveMemory);
 router.patch('/admin/:id/reject', rejectMemory);
+router.patch('/admin/:id/clear-reports', clearReports);
 router.delete('/admin/:id', deleteMemory);
+
+// Auth-only engagement endpoints.
+router.post('/:id/like', protect, toggleLike);
+router.post('/:id/comments', protect, addComment);
+router.post('/:id/share', protect, addShare);
+router.post('/:id/report', protect, addReport);
 
 // Optional compatibility aliases:
 // Keeping these helps older frontend calls keep working.

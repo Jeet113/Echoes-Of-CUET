@@ -500,6 +500,30 @@
         </div>
     </div>
 
+    <!-- Comments Modal -->
+    <div class="comments-modal-overlay" id="commentsModalOverlay" aria-hidden="true">
+        <div class="comments-modal" role="dialog" aria-modal="true" aria-labelledby="commentsModalTitle">
+            <button class="comments-modal-close" id="commentsModalClose" type="button" aria-label="Close comments modal">&times;</button>
+            <h3 id="commentsModalTitle">Comments</h3>
+            <p class="comments-modal-subtitle">Read what others said and add your own comment.</p>
+
+            <div id="commentsList" class="comments-list"></div>
+
+            <label class="comments-modal-label" for="commentInput">Add Comment</label>
+            <textarea
+                id="commentInput"
+                class="comments-modal-textarea"
+                placeholder="Write a comment..."
+                rows="3"
+            ></textarea>
+
+            <div class="comments-modal-actions">
+                <button class="report-btn report-btn-secondary" id="commentCancelBtn" type="button">Close</button>
+                <button class="report-btn report-btn-primary" id="commentSubmitBtn" type="button">Post Comment</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Custom JS -->
     <script src="js/memory-sync.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBjsl_va8xndI0ua-x3Osv5xsYsF-REHv8&libraries=places&loading=async" async defer></script>

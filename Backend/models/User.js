@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const CUET_EMAIL_REGEX = /^u\d{7}@student\.cuet\.ac\.bd$/;
+const ADMIN_EMAIL = 'admin@cuet.ac.bd';
 
 const userSchema = new mongoose.Schema(
   {
@@ -17,7 +18,10 @@ const userSchema = new mongoose.Schema(
       unique: true,
       lowercase: true,
       trim: true,
-      match: CUET_EMAIL_REGEX,
+      validate: {
+        validator: (value) => CUET_EMAIL_REGEX.test(value) || value === ADMIN_EMAIL,
+        message: 'Invalid email format.',
+      },
     },
     password: {
       type: String,
@@ -33,6 +37,28 @@ const userSchema = new mongoose.Schema(
       type: String,
       trim: true,
       default: '',
+    },
+    bio: {
+      type: String,
+      trim: true,
+      default: '',
+      maxlength: 300,
+    },
+    profileImage: {
+      type: String,
+      trim: true,
+      default: '',
+    },
+    coverImage: {
+      type: String,
+      trim: true,
+      default: '',
+    },
+    role: {
+      type: String,
+      enum: ['user', 'admin'],
+      default: 'user',
+      index: true,
     },
     isVerified: {
       type: Boolean,

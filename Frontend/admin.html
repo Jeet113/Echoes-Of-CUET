@@ -46,21 +46,6 @@
                 <span>Reported Memories</span>
                 <span class="nav-badge" id="pendingNavBadge">0</span>
             </a>
-            <a href="#" class="nav-item" data-section="approved">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                </svg>
-                <span>Approved</span>
-            </a>
-            <a href="#" class="nav-item" data-section="rejected">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <line x1="15" y1="9" x2="9" y2="15"></line>
-                    <line x1="9" y1="9" x2="15" y2="15"></line>
-                </svg>
-                <span>Rejected</span>
-            </a>
             <a href="#" class="nav-item" data-section="users">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
@@ -69,13 +54,6 @@
                     <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
                 </svg>
                 <span>Users</span>
-            </a>
-            <a href="#" class="nav-item" data-section="settings">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="3"></circle>
-                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-                </svg>
-                <span>Settings</span>
             </a>
         </nav>
 
@@ -204,37 +182,8 @@
                 <div class="card recent-activity">
                     <div class="card-header">
                         <h3>Recent Activity</h3>
-                        <a href="#" class="view-all">View all</a>
                     </div>
-                    <div class="activity-list">
-                        <div class="activity-item">
-                            <div class="activity-icon new">📝</div>
-                            <div class="activity-content">
-                                <p><strong>Ahmed Khan</strong> submitted a new memory</p>
-                                <span>2 minutes ago</span>
-                            </div>
-                        </div>
-                        <div class="activity-item">
-                            <div class="activity-icon approved">✅</div>
-                            <div class="activity-content">
-                                <p><strong>Library Night Study</strong> was approved</p>
-                                <span>1 hour ago</span>
-                            </div>
-                        </div>
-                        <div class="activity-item">
-                            <div class="activity-icon user">👤</div>
-                            <div class="activity-content">
-                                <p><strong>New user</strong> Fatima Rahman registered</p>
-                                <span>3 hours ago</span>
-                            </div>
-                        </div>
-                        <div class="activity-item">
-                            <div class="activity-icon rejected">❌</div>
-                            <div class="activity-content">
-                                <p><strong>Inappropriate content</strong> was rejected</p>
-                                <span>5 hours ago</span>
-                            </div>
-                        </div>
+                    <div class="activity-list" id="adminActivityList">
                     </div>
                 </div>
 
@@ -242,47 +191,7 @@
                     <div class="card-header">
                         <h3>Popular Locations</h3>
                     </div>
-                    <div class="location-list">
-                        <div class="location-item">
-                            <div class="location-rank">1</div>
-                            <div class="location-info">
-                                <h4>Central Library</h4>
-                                <div class="location-bar">
-                                    <div class="bar-fill" style="width: 85%"></div>
-                                </div>
-                            </div>
-                            <span class="location-count">42</span>
-                        </div>
-                        <div class="location-item">
-                            <div class="location-rank">2</div>
-                            <div class="location-info">
-                                <h4>Zero Point</h4>
-                                <div class="location-bar">
-                                    <div class="bar-fill" style="width: 70%"></div>
-                                </div>
-                            </div>
-                            <span class="location-count">35</span>
-                        </div>
-                        <div class="location-item">
-                            <div class="location-rank">3</div>
-                            <div class="location-info">
-                                <h4>Cafeteria</h4>
-                                <div class="location-bar">
-                                    <div class="bar-fill" style="width: 55%"></div>
-                                </div>
-                            </div>
-                            <span class="location-count">28</span>
-                        </div>
-                        <div class="location-item">
-                            <div class="location-rank">4</div>
-                            <div class="location-info">
-                                <h4>Cricket Field</h4>
-                                <div class="location-bar">
-                                    <div class="bar-fill" style="width: 40%"></div>
-                                </div>
-                            </div>
-                            <span class="location-count">20</span>
-                        </div>
+                    <div class="location-list" id="adminLocationList">
                     </div>
                 </div>
             </div>
@@ -295,183 +204,7 @@
                 <p>Review user reports and decide whether to keep or delete memories</p>
             </div>
 
-            <div class="memories-grid" id="pendingGrid">
-                <div class="memory-card">
-                    <div class="memory-image">
-                        <img src="https://via.placeholder.com/400x200/005F73/FFFFFF?text=Late+Night+Study" alt="Memory">
-                        <span class="memory-status pending">Pending</span>
-                    </div>
-                    <div class="memory-content">
-                        <h3>Late Night at the Library</h3>
-                        <p class="memory-story">The library was my second home during finals. Those quiet nights with friends...</p>
-                        <div class="memory-meta">
-                            <div class="meta-item">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                                    <circle cx="12" cy="7" r="4"></circle>
-                                </svg>
-                                <span>Rashed Ahmed • CSE '23</span>
-                            </div>
-                            <div class="meta-item">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <circle cx="12" cy="12" r="10"></circle>
-                                    <polyline points="12 6 12 12 16 14"></polyline>
-                                </svg>
-                                <span>2 hours ago</span>
-                            </div>
-                        </div>
-                        <div class="memory-actions">
-                            <button class="btn-approve" onclick="approveMemory(this)">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <polyline points="20 6 9 17 4 12"></polyline>
-                                </svg>
-                                Approve
-                            </button>
-                            <button class="btn-reject" onclick="rejectMemory(this)">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                                </svg>
-                                Reject
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="memory-card">
-                    <div class="memory-image">
-                        <img src="https://via.placeholder.com/400x200/0A9396/FFFFFF?text=Cricket+Match" alt="Memory">
-                        <span class="memory-status pending">Pending</span>
-                    </div>
-                    <div class="memory-content">
-                        <h3>Championship Victory 2025</h3>
-                        <p class="memory-story">When our department won the inter-department cricket tournament...</p>
-                        <div class="memory-meta">
-                            <div class="meta-item">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                                    <circle cx="12" cy="7" r="4"></circle>
-                                </svg>
-                                <span>Tanvir Islam • ME '24</span>
-                            </div>
-                            <div class="meta-item">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <circle cx="12" cy="12" r="10"></circle>
-                                    <polyline points="12 6 12 12 16 14"></polyline>
-                                </svg>
-                                <span>5 hours ago</span>
-                            </div>
-                        </div>
-                        <div class="memory-actions">
-                            <button class="btn-approve" onclick="approveMemory(this)">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <polyline points="20 6 9 17 4 12"></polyline>
-                                </svg>
-                                Approve
-                            </button>
-                            <button class="btn-reject" onclick="rejectMemory(this)">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                                </svg>
-                                Reject
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="memory-card">
-                    <div class="memory-image no-image">
-                        <div class="placeholder-icon">📷</div>
-                        <span class="memory-status pending">Pending</span>
-                    </div>
-                    <div class="memory-content">
-                        <h3>First Day on Campus</h3>
-                        <p class="memory-story">I remember walking through the main gate for the first time, nervous but excited...</p>
-                        <div class="memory-meta">
-                            <div class="meta-item">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                                    <circle cx="12" cy="7" r="4"></circle>
-                                </svg>
-                                <span>Nusrat Jahan • ARCH '25</span>
-                            </div>
-                            <div class="meta-item">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <circle cx="12" cy="12" r="10"></circle>
-                                    <polyline points="12 6 12 12 16 14"></polyline>
-                                </svg>
-                                <span>1 day ago</span>
-                            </div>
-                        </div>
-                        <div class="memory-actions">
-                            <button class="btn-approve" onclick="approveMemory(this)">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <polyline points="20 6 9 17 4 12"></polyline>
-                                </svg>
-                                Approve
-                            </button>
-                            <button class="btn-reject" onclick="rejectMemory(this)">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                                </svg>
-                                Reject
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Approved Section -->
-        <section class="content-section" id="approved">
-            <div class="section-header">
-                <h1>Approved Memories</h1>
-                <p>These memories are live on the map</p>
-            </div>
-            <div class="memories-grid" id="approvedGrid">
-                <div class="memory-card">
-                    <div class="memory-image">
-                        <img src="https://via.placeholder.com/400x200/94D2BD/001219?text=Shaheed+Minar" alt="Memory">
-                        <span class="memory-status approved">Approved</span>
-                    </div>
-                    <div class="memory-content">
-                        <h3>21st February Memories</h3>
-                        <p class="memory-story">Every year we gather at the Shaheed Minar to pay our respects...</p>
-                        <div class="memory-meta">
-                            <div class="meta-item">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                                    <circle cx="12" cy="7" r="4"></circle>
-                                </svg>
-                                <span>Sakib Hassan • EEE '22</span>
-                            </div>
-                        </div>
-                        <div class="memory-actions single">
-                            <button class="btn-view">View on Map</button>
-                            <button class="btn-delete" onclick="deleteMemory(this)">Delete</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Rejected Section -->
-        <section class="content-section" id="rejected">
-            <div class="section-header">
-                <h1>Rejected Memories</h1>
-                <p>Memories that didn't meet the guidelines</p>
-            </div>
-            <div class="memories-grid" id="rejectedGrid"></div>
-            <div class="empty-state" id="rejectedEmptyState">
-                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <path d="M8 12h8"></path>
-                </svg>
-                <h3>No rejected memories</h3>
-                <p>All submitted memories have been approved or are pending review.</p>
-            </div>
+            <div class="memories-grid" id="pendingGrid"></div>
         </section>
 
         <!-- Users Section -->
@@ -490,129 +223,10 @@
                             <th>Batch</th>
                             <th>Memories</th>
                             <th>Joined</th>
-                            <th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td>
-                                <div class="user-cell">
-                                    <div class="user-avatar-sm">AK</div>
-                                    <span>Ahmed Khan</span>
-                                </div>
-                            </td>
-                            <td>ahmed.khan@cuet.ac.bd</td>
-                            <td>CSE</td>
-                            <td>2021</td>
-                            <td><span class="count-badge">8</span></td>
-                            <td>Jan 15, 2026</td>
-                            <td>
-                                <button class="btn-icon" title="View"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg></button>
-                                <button class="btn-icon" title="Edit"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="user-cell">
-                                    <div class="user-avatar-sm">FR</div>
-                                    <span>Fatima Rahman</span>
-                                </div>
-                            </td>
-                            <td>fatima.r@cuet.ac.bd</td>
-                            <td>EEE</td>
-                            <td>2022</td>
-                            <td><span class="count-badge">5</span></td>
-                            <td>Jan 12, 2026</td>
-                            <td>
-                                <button class="btn-icon" title="View"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg></button>
-                                <button class="btn-icon" title="Edit"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="user-cell">
-                                    <div class="user-avatar-sm">RI</div>
-                                    <span>Rashed Islam</span>
-                                </div>
-                            </td>
-                            <td>rashed.islam@cuet.ac.bd</td>
-                            <td>ME</td>
-                            <td>2020</td>
-                            <td><span class="count-badge">12</span></td>
-                            <td>Jan 8, 2026</td>
-                            <td>
-                                <button class="btn-icon" title="View"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg></button>
-                                <button class="btn-icon" title="Edit"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button>
-                            </td>
-                        </tr>
-                    </tbody>
+                    <tbody id="adminUsersTableBody"></tbody>
                 </table>
-            </div>
-        </section>
-
-        <!-- Settings Section -->
-        <section class="content-section" id="settings">
-            <div class="section-header">
-                <h1>Settings</h1>
-                <p>Configure your admin panel preferences</p>
-            </div>
-            <div class="settings-grid">
-                <div class="settings-card">
-                    <h3>General Settings</h3>
-                    <div class="setting-item">
-                        <div class="setting-info">
-                            <h4>Auto-approve verified users</h4>
-                            <p>Automatically approve memories from verified users</p>
-                        </div>
-                        <label class="toggle-switch">
-                            <input type="checkbox">
-                            <span class="toggle-slider"></span>
-                        </label>
-                    </div>
-                    <div class="setting-item">
-                        <div class="setting-info">
-                            <h4>Email notifications</h4>
-                            <p>Receive email when new memories are submitted</p>
-                        </div>
-                        <label class="toggle-switch">
-                            <input type="checkbox" checked>
-                            <span class="toggle-slider"></span>
-                        </label>
-                    </div>
-                    <div class="setting-item">
-                        <div class="setting-info">
-                            <h4>Require image upload</h4>
-                            <p>Users must upload an image with their memory</p>
-                        </div>
-                        <label class="toggle-switch">
-                            <input type="checkbox">
-                            <span class="toggle-slider"></span>
-                        </label>
-                    </div>
-                </div>
-                <div class="settings-card">
-                    <h3>Moderation</h3>
-                    <div class="setting-item">
-                        <div class="setting-info">
-                            <h4>Content filter</h4>
-                            <p>Automatically flag inappropriate content</p>
-                        </div>
-                        <label class="toggle-switch">
-                            <input type="checkbox" checked>
-                            <span class="toggle-slider"></span>
-                        </label>
-                    </div>
-                    <div class="setting-item">
-                        <div class="setting-info">
-                            <h4>Featured memories</h4>
-                            <p>Allow marking memories as featured</p>
-                        </div>
-                        <label class="toggle-switch">
-                            <input type="checkbox" checked>
-                            <span class="toggle-slider"></span>
-                        </label>
-                    </div>
-                </div>
             </div>
         </section>
     </main>

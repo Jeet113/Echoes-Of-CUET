@@ -125,6 +125,92 @@ const memorySchema = new mongoose.Schema(
         },
       },
     ],
+
+    // Engagement interactions.
+    likes: [
+      {
+        userId: {
+          type: String,
+          required: true,
+          trim: true,
+        },
+        userName: {
+          type: String,
+          trim: true,
+          default: 'CUET User',
+        },
+        at: {
+          type: Date,
+          default: Date.now,
+        },
+      },
+    ],
+    comments: [
+      {
+        userId: {
+          type: String,
+          required: true,
+          trim: true,
+        },
+        userName: {
+          type: String,
+          trim: true,
+          default: 'CUET User',
+        },
+        text: {
+          type: String,
+          required: true,
+          trim: true,
+          maxlength: 500,
+        },
+        at: {
+          type: Date,
+          default: Date.now,
+        },
+      },
+    ],
+    shares: [
+      {
+        userId: {
+          type: String,
+          required: true,
+          trim: true,
+        },
+        userName: {
+          type: String,
+          trim: true,
+          default: 'CUET User',
+        },
+        at: {
+          type: Date,
+          default: Date.now,
+        },
+      },
+    ],
+    reports: [
+      {
+        userId: {
+          type: String,
+          required: true,
+          trim: true,
+        },
+        userName: {
+          type: String,
+          trim: true,
+          default: 'CUET User',
+        },
+        reason: {
+          type: String,
+          trim: true,
+          default: 'No reason provided',
+          maxlength: 500,
+        },
+        at: {
+          type: Date,
+          default: Date.now,
+        },
+      },
+    ],
   },
   {
     // Automatically adds createdAt and updatedAt fields.
