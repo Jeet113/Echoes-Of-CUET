@@ -18,7 +18,7 @@ let isMobile = () => window.innerWidth <= 900;
 let pendingReportMemoryId = null;
 let pendingCommentMemoryId = null;
 let memoryAutoSyncTimer = null;
-const MEMORY_API_BASE = 'http://localhost:5000/api/memories';
+const MEMORY_API_BASE = 'https://echoes-of-cuet-1.onrender.com/api/memories';
 
 // CUET Campus coordinates
 const CUET_CENTER = { lat: 22.4625, lng: 91.9703 };
@@ -239,7 +239,7 @@ function mapApiMemory(memory) {
 // Fetch all memories from Node.js backend and render them as map markers.
 async function fetchMemoriesFromServer() {
     try {
-        const response = await fetch('http://localhost:5000/api/memories/all');
+        const response = await fetch('https://echoes-of-cuet-1.onrender.com/api/memories/all');
         const data = await response.json();
 
         if (!response.ok) {

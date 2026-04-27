@@ -606,7 +606,7 @@ async function uploadMemoryToBackend({ title, description, category, lat, lng, i
     }
 
     // Send to backend.
-    const response = await fetch('http://localhost:5000/api/memories/share', {
+    const response = await fetch('https://echoes-of-cuet-1.onrender.com/api/memories/share', {
         method: 'POST',
         body: formData,
     });
@@ -726,7 +726,7 @@ async function handleSubmit() {
 
         // Friendly alert for common network/offline backend issue.
         if (error.name === 'TypeError' || /failed to fetch|network|offline/i.test(message)) {
-            alert('Server Offline: Please start backend server at http://localhost:5000 and try again.');
+            alert('Server Offline: Please start backend server at https://echoes-of-cuet-1.onrender.com and try again.');
         }
     } finally {
         setShareSubmitLoading(false);
@@ -827,7 +827,7 @@ function renderRecentMemories() {
 // Fetch recent memories from backend so the share page reflects server data.
 async function fetchRecentMemoriesFromServer() {
     try {
-        const response = await fetch('http://localhost:5000/api/memories/all');
+        const response = await fetch('https://echoes-of-cuet-1.onrender.com/api/memories/all');
         const data = await response.json();
 
         if (!response.ok) {

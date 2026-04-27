@@ -1,5 +1,5 @@
-const MEMORY_API_BASE = 'http://localhost:5000/api/memories';
-const AUTH_API_BASE = 'http://localhost:5000/api/auth';
+const MEMORY_API_BASE = 'https://echoes-of-cuet-1.onrender.com/api/memories';
+const AUTH_API_BASE = 'https://echoes-of-cuet-1.onrender.com/api/auth';
 
 let memories = [];
 let users = [];
@@ -262,7 +262,7 @@ function renderRecentActivity() {
     list.innerHTML = rows
         .map((memory) => {
             const reportsCount = Array.isArray(memory.reports) ? memory.reports.length : 0;
-            const reportBadge = reportsCount > 0 ? `<span style="color:#ff9b9b;"> • ${reportsCount} report${reportsCount > 1 ? 's' : ''}</span>` : '';
+            const reportBadge = reportsCount > 0 ? `<span style="color:#ff9b9b;"> ï¿½ ${reportsCount} report${reportsCount > 1 ? 's' : ''}</span>` : '';
 
             return `
                 <div class="activity-item">
@@ -481,7 +481,7 @@ function setupReportedActions() {
                 return;
             }
             if (error.name === 'TypeError' || /failed to fetch|network|offline/i.test(error.message || '')) {
-                alert('Server Offline: Please make sure backend is running on http://localhost:5000.');
+                alert('Server Offline: Please make sure backend is running on https://echoes-of-cuet-1.onrender.com.');
             } else {
                 alert(error.message || 'Failed to complete admin action.');
             }

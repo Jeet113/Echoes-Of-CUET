@@ -150,7 +150,7 @@ async function fetchAndRenderDashboardMemories(user) {
     const communityCount = document.getElementById('dashCommunityCount');
 
     try {
-        const response = await fetch('http://localhost:5000/api/memories/all');
+        const response = await fetch('https://echoes-of-cuet-1.onrender.com/api/memories/all');
         const data = await response.json();
         if (!response.ok) throw new Error(data.message || 'Failed to load memories');
 
@@ -240,7 +240,7 @@ async function uploadImageToCloudinary(file, kind) {
     formData.append('image', file);
     formData.append('kind', kind);
 
-    const response = await fetch('http://localhost:5000/api/memories/upload-image', {
+    const response = await fetch('https://echoes-of-cuet-1.onrender.com/api/memories/upload-image', {
         method: 'POST',
         body: formData,
     });
@@ -391,7 +391,7 @@ function setupProfileEditor() {
                     throw new Error('Please log in again to update profile.');
                 }
 
-                const response = await fetch('http://localhost:5000/api/auth/profile', {
+                const response = await fetch('https://echoes-of-cuet-1.onrender.com/api/auth/profile', {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
@@ -434,7 +434,7 @@ async function refreshUserFromServer() {
     const token = getAuthToken();
     if (!token) return null;
 
-    const response = await fetch('http://localhost:5000/api/auth/me', {
+    const response = await fetch('https://echoes-of-cuet-1.onrender.com/api/auth/me', {
         headers: {
             Authorization: `Bearer ${token}`,
         },
