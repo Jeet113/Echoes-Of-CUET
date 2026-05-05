@@ -1,7 +1,7 @@
 const nodemailer = require('nodemailer');
 
 function createTransporter() {
-  const requiredKeys = ['EMAIL_USER', 'EMAIL_PASS'];
+  const requiredKeys = ['BREVO_SMTP_HOST', 'BREVO_SMTP_PORT', 'BREVO_SMTP_USER', 'BREVO_SMTP_PASS'];
   const missing = requiredKeys.filter((key) => !process.env[key]);
 
   if (missing.length > 0) {
@@ -9,17 +9,19 @@ function createTransporter() {
   }
 
   return nodemailer.createTransport({
-    service: 'gmail',
+    host: process.env.BREVO_SMTP_HOST,
+    port: Number(process.env.BREVO_SMTP_PORT),
+    secure: Number(process.env.BREVO_SMTP_PORT) === 465,
     auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
+      user: process.env.BREVO_SMTP_USER,
+      pass: process.env.BREVO_SMTP_PASS,
     },
   });
 }
 
 async function sendOtpEmail(email, otp, name) {
   const transporter = createTransporter();
-  const from = process.env.EMAIL_FROM || process.env.EMAIL_USER;
+  const from = process.env.EMAIL_FROM || process.env.BREVO_SMTP_USER;
 
   try {
     await transporter.verify();
