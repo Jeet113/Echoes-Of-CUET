@@ -23,13 +23,22 @@ async function sendOtpEmail(email, otp, name) {
   const transporter = createTransporter();
   const from = process.env.EMAIL_FROM || process.env.EMAIL_USER;
 
-  await transporter.sendMail({
-    from,
-    to: email,
-    subject: 'Echoes of CUET - Verify your account',
-    text: `Hello ${name},\n\nYour verification OTP is: ${otp}\n\nThis code is required to complete your registration.`,
-    html: `<p>Hello ${name},</p><p>Your verification OTP is: <strong>${otp}</strong></p><p>This code is required to complete your registration.</p>`,
-  });
+  try {
+    await transporter.sendMail({
+      from,
+      to: email,
+      subject: 'Echoes of CUET - Verify your account',
+      text: `Hello ${name},\n\nYour verification OTP is: ${otp}\n\nThis code is required to complete your registration.`,
+      html: `<p>Hello ${name},</p><p>Your verification OTP is: <strong>${otp}</strong></p><p>This code is required to complete your registration.</p>`,
+    });
+  } catch (error) {
+    console.error('OTP email failed:', {
+      code: error.code,
+      response: error.response,
+      message: error.message,
+    });
+    throw error;
+  }
 }
 
 module.exports = {

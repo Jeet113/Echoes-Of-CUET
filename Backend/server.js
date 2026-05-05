@@ -39,6 +39,15 @@ app.use(errorHandler);
 // Connect to MongoDB Atlas and then start the server.
 async function startServer() {
   try {
+    const emailEnvStatus = {
+      EMAIL_HOST: Boolean(process.env.EMAIL_HOST),
+      EMAIL_PORT: Boolean(process.env.EMAIL_PORT),
+      EMAIL_USER: Boolean(process.env.EMAIL_USER),
+      EMAIL_PASS: Boolean(process.env.EMAIL_PASS),
+      EMAIL_FROM: Boolean(process.env.EMAIL_FROM),
+    };
+    console.log('Email env present:', emailEnvStatus);
+
     await mongoose.connect(process.env.MONGO_URI);
     console.log('Connected to MongoDB Atlas');
 
